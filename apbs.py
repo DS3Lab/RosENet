@@ -9,30 +9,50 @@ from utils import isfloat
 
 
 class APBS:
-    _PROTEIN_FOLDER = Config.get('Path','ProteinFolder')
-    _APBS_BIN_PATH = Config.get('Tools','APBSPath')
-
+    _PROTEIN_FOLDER = Config.get('Path', 'ProteinFolder')
+    _APBS_BIN_PATH = Config.get('Tools', 'APBSPath')
 
     @staticmethod
-    def run(output_path, name, pose, selection, grid_dim, grid_space, center, cglen, fglen, override = False):
+    def run(
+            output_path,
+            name,
+            pose,
+            selection,
+            grid_dim,
+            grid_space,
+            center,
+            cglen,
+            fglen,
+            override=False):
         protein_folder = APBS._PROTEIN_FOLDER
         apbs_bin_path = APBS._APBS_BIN_PATH
-        apbs_template_file = Path(protein_folder) / 'configuration_templates' / 'apbs.in'
+        apbs_template_file = Path(protein_folder) / \
+            'configuration_templates' / 'apbs.in'
         apbs_input_file = output_path / f'apbs_{name}.in'
         apbs_output_file = output_path / f'{name}_potential.dx'
         if not apbs_output_file.exists() or override:
             writePQR(f'{name}.pqr', pose.select(selection))
-            with  apbs_template_file.open('r') as f:
+            with apbs_template_file.open('r') as f:
                 file_data = f.read()
-            file_data = APBS._replace_apbs(file_data, name, grid_dim, grid_space, center, cglen, fglen)
+            file_data = APBS._replace_apbs(
+                file_data, name, grid_dim, grid_space, center, cglen, fglen)
             with apbs_input_file.open('w') as f:
                 f.write(file_data)
-            call([apbs_bin_path, f'{apbs_input_file.absolute()}'], cwd=str(output_path))
+            call([apbs_bin_path,
+                  f'{apbs_input_file.absolute()}'],
+                 cwd=str(output_path))
         o, d, potential = APBS._import_dx(apbs_output_file)
         return potential
 
     @staticmethod
-    def _replace_apbs(filedata, xxx, grid_dim, grid_space, center, cglen, fglen):
+    def _replace_apbs(
+            filedata,
+            xxx,
+            grid_dim,
+            grid_space,
+            center,
+            cglen,
+            fglen):
         filedata = filedata \
             .replace('XXX', xxx) \
             .replace('GRID_DIM', grid_dim) \
@@ -62,7 +82,8 @@ class APBS:
                         dims = np.array(row[-3:], dtype=int)
                         data = np.empty(np.prod(dims))
                 elif isfloat(row[0]):
-                    data[3 * counter:min(3 * (counter + 1),len(data))] = np.array(row, dtype=float)
+                    data[3 * counter:min(3 * (counter + 1), len(data))
+                         ] = np.array(row, dtype=float)
                     counter += 1
         data = data.reshape(dims)
         return origin, delta, data
@@ -71,13 +92,16 @@ class APBS:
     def _export_dx(filename, density, origin, delta):
         nx, ny, nz = density.shape
         with open(filename, 'w') as dxfile:
-            dxfile.write(f'object 1 class gridpositions counts {nx} {ny} {nz}\n')
+            dxfile.write(
+                f'object 1 class gridpositions counts {nx} {ny} {nz}\n')
             dxfile.write(f'origin {origin[0]} {origin[1]} {origin[2]}\n')
             dxfile.write(f'delta {delta} 0.0 0.0\n')
             dxfile.write(f'delta 0.0 {delta} 0.0\n')
             dxfile.write(f'delta 0.0 0.0 {delta}\n')
-            dxfile.write(f'object 2 class gridconnections counts {nx}, {ny}, {nz}\n')
-            dxfile.write(f'object 3 class array type double rank 0 items {nx * ny * nz} data follows\n')
+            dxfile.write(
+                f'object 2 class gridconnections counts {nx}, {ny}, {nz}\n')
+            dxfile.write(
+                f'object 3 class array type double rank 0 items {nx * ny * nz} data follows\n')
             i = 1
             for d in density.flatten(order='C'):
                 if i % 3:

@@ -15,10 +15,11 @@ parser.add_argument('-i', '--interpolation', dest='interpolation')
 parser.add_argument('-P', '--parallel', dest='parallel', action='store_true')
 
 
-def process_protein(pdb_folder, interpolation, parallel):
+def process_protein(pdb_folder, interp, parall):
     (pdb_folder / 'images').mkdir(exist_ok=True)
-    protein = Protein(pdb_folder)
-    protein.compute_grids(interpolation, parallel)
+    p = Protein(pdb_folder)
+    p.compute_grids(interp, parall)
+
 
 if __name__ == "__main__":
     args = parser.parse_args()

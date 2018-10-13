@@ -3,18 +3,21 @@ import configparser
 import sys
 from pathlib import Path
 
+
 class Config:
     config = None
-    _CFG_DEF_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),'config.ini')
+    _CFG_DEF_PATH = os.path.join(
+        os.path.dirname(
+            os.path.abspath(__file__)),
+        'config.ini')
     _REQUIRED_FIELDS = [('Path', 'ProteinFolder', '/path/to/protein/folder'),
                         ('Tools', 'APBSPath', '/path/to/APBS/binary')]
 
     @staticmethod
     def get(section, option):
-        if Config.config == None:
+        if Config.config is None:
             Config.load_config(Config._CFG_DEF_PATH)
         return Config.config[section][option]
-
 
     @staticmethod
     def load_config(config_path):
@@ -48,7 +51,8 @@ class Config:
 
     @staticmethod
     def _set_default_fields():
-        Config.config.read_dict({'Grid Parameters': dict(GridSize=65, GridSpacing=0.375, GridRadius=4.6875)})
+        Config.config.read_dict({'Grid Parameters': dict(
+            GridSize=65, GridSpacing=0.375, GridRadius=4.6875)})
 
     @staticmethod
     def _set_default_required():
