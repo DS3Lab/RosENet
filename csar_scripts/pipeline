@@ -1,0 +1,9 @@
+bash make_ligand_pdb_params.sh
+python3 make_complex_pdb.py
+python3 make_ligand_mol2_renamed.py
+bash minimize_rosetta.sh
+python3 hide_not_minimal_complexes.py
+python3 make_protein_pdb.py
+bash make_ligand_mol2.sh
+bash make_pdbqt.sh
+python3 compute_rosetta_energy.py

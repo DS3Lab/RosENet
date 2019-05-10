@@ -1,0 +1,35 @@
+﻿Force Field Parameters for Neutral FCC Metals in CHARMM (CHARMM-METAL)
+
+Hendrik Heinz, Jie Feng, and Hadi Ramezani-Dakhel
+
+Department of Polymer Engineering, University of Akron, Ohio 44325
+Email: hendrik.heinz@uakron.edu
+
+
+Lennard-Jones parameters for eight neutral fcc metals Ag, Al, Au, Cu, Ni, Pb, Pd and Pt have been added to CHARMM22 for the simulation of metal nanostructures in contact with biomolecules and solvents. The metal atoms are represented by 3-letter residue names for convenient use with psfgen, i.e., AGM, ALM, AUM, CUM, NIM, PBM, PDM, and PTM. Structural models (.pdb/.psf) can be prepared using psfgen by treating metal atoms as separate residues and simulations can be run using NAMD or CHARMM. 
+
+Topology and Force Field Files
+• top_all22_prot_metals.inp
+• par_all22_prot_metals.inp
+
+Models of Metals 
+The folder MODELS_METALS contains models of the unit cells and of customized supercells of the eight metals to aid in building {111}, {100}, and {110} surfaces.
+
+Example 
+The folder EXAMPLE_CALCULATION contains an example for the preparation and short MD simulation of a peptide on an Ag {111} surface in water.
+
+1. Preparation of Structures (see folder EXAMPLE_CALCULATION/PRE_RUN)
+1.1. A single .pdb file containing the initial coordinates of all atoms is helpful, for example, including the metal surface slab, biomolecules, and solvent molecules. If the format of the .pdb file is not consistent for use with psfgen, necessary modifications may be performed using a text editor program. An example is the Ag111_H2O_Peptide.pdb file. 
+1.2. This file is helpful to manually prepare separate .pdb files containing the coordinates of each subsystem, e.g., the metal surface only, water plus one peptide, other individual biomolecules, etc, according to the requirements of psfgen. Examples are the files Ag111_only.pdb and h2o_peptide_only.pdb. See NAMD manual and tutorials for more details.
+1.3. These files are then required to create simulation-ready .pdb and .psf files using a script file (prep_script_metal_pep_h2o.run), which also psfgen and the topology file. Upon completion of the script, the output is written into the OUT_AG111_H2O_PEPTIDE folder and contains the files fAg111_H2O_Peptide.pdb and fAG111_H2O_Peptide.psf for the simulation, as well as three individual files of water, peptide, and Ag111 only that are not further needed.
+
+2. Running a Simulation (see folder EXAMPLE_CALCULATION/RUN) 
+Using the ready .pdb and .psf files, molecular dynamics simulations can be carried out using NAMD without further modification. The RUN folder contains complete input files (.pdb, .psf, .conf, parameter file) and output files (.log, .dcd, .coor, .vel, .xsc) for 200 fs NVT MD of a peptide on a Ag {111} surface.
+
+References
+(1) H. Heinz, R. A. Vaia, B. L. Farmer and R. R. Naik, Accurate Simulation of Surfaces and Interfaces of Face-Centered Cubic Metals Using 12-6 and 9-6 Lennard-Jones Potentials, J. Phys. Chem. C, 2008, 112,17281-17290.
+(2) H. Heinz, B. L. Farmer, R. B. Pandey, J. M. Slocik, S. S. Patnaik, R. Pachter, and R. R. Naik, Nature of Molecular Interactions of Peptides with Gold, Palladium, and Pd-Au Bimetal Surfaces
+in Aqueous Solution, J. Am. Chem. Soc. 2009, 131, 9704-9714.
+(3) J. Feng, R. B. Pandey, R. J. Berry, J. M. Slocik, R. R. Naik, B. L. Farmer and H. Heinz, Adsorption Mechanism of Single Amino Acid and Surfactant Molecules to Au {111} Surfaces in Aqueous Solution: Design Rules for Metal-Binding Molecules, Soft Matter 2011, 7, 2113-2120.
+(4) For further validation and application of this model, see also: R. Coppage et al. J. Am. Chem. Soc. 2011, 133, 12346; J. Feng et al. Small 2012, 8, 1049.
+

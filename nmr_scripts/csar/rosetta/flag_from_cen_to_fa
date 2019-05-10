@@ -1,0 +1,7 @@
+-parser:protocol cen_to_fa.xml
+
+-score:weights cen_std_smooth
+-in:file:s ./$complex
+
+-out:path:pdb ./$complex.fa
+-out:file:scorefile /dev/null	#to prevent output of the score file

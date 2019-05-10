@@ -1,0 +1,9 @@
+!BIOSYM archive 3
+PBC=ON
+Materials Studio Generated CAR File
+!DATE Tue Jun 03 15:36:41 2008
+PBC    3.9236    2.7744    2.7744   90.0000   90.0000   90.0000 (P1)
+Pt1      0.000000000    0.000000000    0.000000000 XXXX 1      Pt      Pt  0.000
+Pt2      1.961800000    1.387202000    1.387202000 XXXX 1      Pt      Pt  0.000
+end
+end

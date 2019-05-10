@@ -1,0 +1,34 @@
+!BIOSYM molecular_data 4
+ 
+!Date: Tue Jun 03 15:51:34 2008   Materials Studio Generated MDF file
+ 
+#topology
+
+@column 1 element
+@column 2 atom_type
+@column 3 charge_group
+@column 4 isotope
+@column 5 formal_charge
+@column 6 charge
+@column 7 switching_atom
+@column 8 oop_flag
+@column 9 chirality_flag
+@column 10 occupancy
+@column 11 xray_temp_factor
+@column 12 connections
+ 
+@molecule Molecule
+ 
+XXXX_1:Al1          Al Al      ?     0  0     0.0000 0 0 8 1.0000  0.0000 
+XXXX_1:Al2          Al Al      ?     0  0     0.0000 0 0 8 1.0000  0.0000 
+XXXX_1:Al3          Al Al      ?     0  0     0.0000 0 0 8 1.0000  0.0000 
+XXXX_1:Al4          Al Al      ?     0  0     0.0000 0 0 8 1.0000  0.0000 
+XXXX_1:Al5          Al Al      ?     0  0     0.0000 0 0 8 1.0000  0.0000 
+XXXX_1:Al6          Al Al      ?     0  0     0.0000 0 0 8 1.0000  0.0000 
+ 
+!
+#symmetry
+@periodicity 3 xyz
+@group (P1)
+
+#end

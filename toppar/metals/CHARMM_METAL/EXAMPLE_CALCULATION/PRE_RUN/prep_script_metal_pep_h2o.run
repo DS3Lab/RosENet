@@ -1,0 +1,47 @@
+# Create working directory;
+mkdir -p OUT_AG111_H2O_PEPTIDE;
+#
+# Split input PDB file into segments}
+grep -v '^HETATM' h2o_peptide_only.pdb > OUT_AG111_H2O_PEPTIDE/peptide_only.pdb ;
+grep -v '^HETATM' Ag111_only.pdb > OUT_AG111_H2O_PEPTIDE/Ag111_only.pdb ;
+grep 'HETATM' h2o_peptide_only.pdb > OUT_AG111_H2O_PEPTIDE/h2o_only.pdb ;
+# (2) Embed the psfgen commands in tile script
+./psfgen << ENDMOL ;
+ 
+#
+# Read topology file
+topology top_all22_prot_metals.inp 
+#
+# Build protein segment
+segment A3C {
+pdb OUT_AG111_H2O_PEPTIDE/peptide_only.pdb 
+#}
+segment AG {
+first none
+last none
+ pdb OUT_AG111_H2O_PEPTIDE/Ag111_only.pdb 
+}
+#
+#
+# Read protein and metal coordinates from PDB files
+coordpdb OUT_AG111_H2O_PEPTIDE/peptide_only.pdb A3C  ;#segment name cannot be longer than 4 letters 
+coordpdb OUT_AG111_H2O_PEPTIDE/Ag111_only.pdb AG
+#
+# (7) Build water segment
+segment SOLV {
+ auto none 
+ pdb OUT_AG111_H2O_PEPTIDE/h2o_only.pdb 
+}
+#
+# (8) Read water coordinates from PDB file
+coordpdb OUT_AG111_H2O_PEPTIDE/h2o_only.pdb SOLV 
+#
+# (9) Guess missing coordinates
+guesscoord 
+#
+# (10) Write structure and coordinate files
+writepsf OUT_AG111_H2O_PEPTIDE/fAg111_H20_Peptide.psf 
+writepdb OUT_AG111_H2O_PEPTIDE/fAg111_H20_Peptide.pdb 
+#
+# End of psfgen commands
+ENDMOL 

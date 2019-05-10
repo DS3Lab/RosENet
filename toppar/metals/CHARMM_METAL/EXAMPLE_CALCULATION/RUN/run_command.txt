@@ -1,0 +1,1 @@
+nohup ~/charmrun ++local +p4 ~/namd2 fAg111_H20_Peptide.conf > fAg111_H20_Peptide.log &

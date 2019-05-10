@@ -1,0 +1,36 @@
+# READ IN MOLECULES
+read 
+  mol pqr XXX.pqr 
+end
+
+
+elec              # Electrostatics calculation on the solvated state
+  mg-auto              # Specify the mode for APBS to run
+  dime GRID_DIM       # The grid dimensions
+  grid GRID_SPACE     # Grid spacing
+  gcent INH_CENTER # Center the grid 
+  cglen CG_LEN  
+  cgcent INH_CENTER
+  fglen FG_LEN 
+  fgcent INH_CENTER
+  mol 1                   # Perform the calculation on molecule 1
+  lpbe                    # Solve the linearized Poisson-Boltzmann 
+                          # equation
+  bcfl mdh                # Use all multipole moments when calculating the
+                          # potential
+  ion 1 0.150 2.0
+  ion -1 0.150 2.0
+  pdie 1.0                # Solute dielectric
+  sdie 78.54              # Solvent dielectric
+  chgm spl2               # Spline-based discretization of the delta
+                          # functions
+  srfm smol                # Molecular surface definition
+  srad 1.4                # Solvent probe radius (for molecular surface)
+  swin 0.3                # Solvent surface spline window (not used here)
+  sdens 10.0              # Sphere density of accessibility object
+  temp 298.15             # Temperature 
+  calcenergy no        # Calculate energies
+  calcforce no            # Do not calculate forces
+  write pot dx XXX_potential # Write out the potential
+end
+quit

@@ -1,0 +1,9 @@
+!BIOSYM archive 3
+PBC=ON
+Materials Studio Generated CAR File
+!DATE Tue Jun 03 15:42:47 2008
+PBC    3.5240    2.4918    2.4918   90.0000   90.0000   90.0000 (P1)
+Ni1      0.000000000   -0.000000000   -0.000000000 XXXX 1      Ni      Ni  0.000
+Ni2      1.762000000    1.245922000    1.245922000 XXXX 1      Ni      Ni  0.000
+end
+end

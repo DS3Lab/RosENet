@@ -1,0 +1,116 @@
+*>>>> CHARMM22 All-Hydrogen Parameter File for Proteins <<<<<<<<<
+*>>>>>>>>>>>>>>>>>>>>> December 2003 <<<<<<<<<<<<<<<<<<<<<<<<<<<<
+* All comments to ADM jr. via the CHARMM web site: www.charmm.org
+*               parameter set discussion forum
+*
+
+! references
+!
+!PROTEINS
+!
+!MacKerell, Jr., A. D.; Bashford, D.; Bellott, M.; Dunbrack Jr., R.L.;
+!Evanseck, J.D.; Field, M.J.; Fischer, S.; Gao, J.; Guo, H.; Ha, S.;
+!Joseph-McCarthy, D.; Kuchnir, L.; Kuczera, K.; Lau, F.T.K.; Mattos,
+!C.; Michnick, S.; Ngo, T.; Nguyen, D.T.; Prodhom, B.; Reiher, III,
+!W.E.; Roux, B.; Schlenkrich, M.; Smith, J.C.; Stote, R.; Straub, J.;
+!Watanabe, M.; Wiorkiewicz-Kuczera, J.; Yin, D.; Karplus, M.  All-atom
+!empirical potential for molecular modeling and dynamics Studies of
+!proteins.  Journal of Physical Chemistry B, 1998, 102, 3586-3616.
+!
+!IONS (see lipid and nucleic acid topology and parameter files for
+!additional ions
+!
+!ZINC
+!
+!Roland H. Stote and Martin Karplus, Zinc Binding in Proteins and
+!Solution: A Simple but Accurate Nonbonded Representation, PROTEINS:
+!Structure, Function, and Genetics 23:12-31 (1995)
+!
+!NEUTRAL FCC METALS (AG, AL, AU, CU, NI, PB, PD, PT)
+!
+!Hendrik Heinz, R. A. Vaia, B. L. Farmer and R. R. Naik, Accurate Simulation
+!of Surfaces and Interfaces of Face-Centered Cubic Metals Using 12-6 and 9-6
+!Lennard-Jones Potentials, Journal of Physical Chemistry C, 2008, 112, 17281-17290.
+!
+!
+
+NONBONDED nbxmod  5 atom cdiel shift vatom vdistance vswitch -
+cutnb 14.0 ctofnb 12.0 ctonnb 10.0 eps 1.0 e14fac 1.0 wmin 1.5 
+                !adm jr., 5/08/91, suggested cutoff scheme
+!
+!V(Lennard-Jones) = Eps,i,j[(Rmin,i,j/ri,j)**12 - 2(Rmin,i,j/ri,j)**6]
+!
+!epsilon: kcal/mole, Eps,i,j = sqrt(eps,i * eps,j)
+!Rmin/2: A, Rmin,i,j = Rmin/2,i + Rmin/2,j
+!
+!atom  ignored    epsilon      Rmin/2   ignored   eps,1-4       Rmin/2,1-4
+!
+! ions and miscellaneous types
+SOD      0.0     -0.0469    1.36375   ! sodium
+                   ! D. Beglovd and B. Roux, dA=-100.8 kcal/mol
+POT      0.0     -0.0870    1.76375   ! potassium
+                   ! D. Beglovd and B. Roux, dA=-82.36+2.8 = -79.56 kca/mol
+CLA      0.0     -0.150     2.27      ! chloride
+                   ! D. Beglovd and B. Roux, dA=-83.87+4.46 = -79.40 kcal/mol
+CAL      0.0     -0.120     1.367     ! Calcium
+                   ! S. Marchand and B. Roux, dA = -384.8 kcal/mol
+!CAL      0.000000  -0.120000     1.710000 ! Calcium (BP) in proteins prior
+                   ! to 2003; not recommended due to need for NBFIX terms
+MG       0.0     -0.0150    1.18500   ! Magnesium
+                   ! B. Roux dA = -441.65
+CES      0.0     -0.1900    2.100
+                   ! Cesium, so far untested.
+ZN     0.000000  -0.250000     1.090000 ! ALLOW  ION
+                ! RHS March 18, 1990
+FE     0.010000   -0.120000     0.650000 ! ALLOW HEM
+                ! Heme (6-liganded): Iron atom (KK 05/13/91)
+HE     0.000000  -0.021270     1.4800   !
+                ! helium, experimental pot. energy surface, adm jr., 12/95
+NE     0.000000  -0.086000     1.5300
+                ! neon, semiempirical pot. energy surface, adm jr., 12/95
+CLAL   0.000000  -0.030000     1.908200 ! chlorine from Jorgensen/BOSS
+                ! for choroacetaldehyde
+
+MN 0.000000 -0.120000 1.710000 ! ALLOW ION 
+
+FE2  0.01  -0.12  0.65 ! taken from all36_prot_heme: FE
+
+
+DUM    0.000000  -0.000000     0.000000 !
+                ! dummy atom
+AG       0.0     -4.56         1.4775 ! HH et al. (2008)
+AL       0.0     -4.02         1.4625 ! HH et al. (2008)
+AU       0.0     -5.29         1.4755 ! HH et al. (2008)
+CU       0.0     -4.72         1.3080 ! HH et al. (2008)
+NI       0.0     -5.65         1.2760 ! HH et al. (2008)
+PB       0.0     -2.93         1.7825 ! HH et al. (2008)
+PD       0.0     -6.15         1.4095 ! HH et al. (2008)
+PT       0.0     -7.80         1.4225 ! HH et al. (2008)
+HG       0.0     -1.00         1.6000 ! Mercury
+CO       0.0     -0.832000     2.5200 ! Cobolot
+
+!pyridine series LJ parametes (see toppar_pyridines.str)
+CAP    0.000000  -0.070000     1.992400 !
+FA     0.000000  -0.12000      1.700000
+                ! from 1,3-difluorobenzene pure solvent
+CN     0.000000  -0.200000     1.750000 ! cyanopyridine
+NC     0.000000  -0.600000     1.850000 ! cyanopyridine
+OCA    0.000000  -0.120000     1.700000   0.000000  -0.120000 1.400000 ! 3acp
+COA    0.000000  -0.110000     2.000000 ! 3acp
+!fluorinated alkanes LJ parameters (see toppar_fluoro_alkanes.str)
+CF1    0.000000  -0.060000     1.900000
+CF2    0.000000  -0.042000     2.050000
+CF3    0.000000  -0.020000     2.300000
+HF1    0.000000  -0.028000     1.3200
+HF2    0.000000  -0.030000     1.3000
+F1     0.0       -0.135        1.63
+F2     0.0       -0.105        1.63
+F3     0.0       -0.097        1.60
+!protein model compounds (see toppar_all22_prot_model.str)
+C3     0.000000  -0.020000     2.275000 ! cyclopropane, JMW and CBP 4/04
+
+HBOND CUTHB 0.5  ! If you want to do hbond analysis (only), then use
+                 ! READ PARAM APPEND CARD
+                 ! to append hbond parameters from the file: par_hbond.inp
+
+END
