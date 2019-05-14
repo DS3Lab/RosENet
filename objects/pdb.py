@@ -1,96 +1,97 @@
-class File:
-    def __init__(self, name, root):
-        self.root = root
-        self.code = root.name
-        self.name = name.format(code=self.code)
-        if "{number}" in path.name:
-            self.multiple = True
+from types import SimpleNamespace
+from Repo.storage.storage import *
+import Repo.storage.storage as storage
+import Repo.rosetta.rosetta as rosetta
+from Repo import settings
 
-    def resolve_path(self, number=None):
-        if number:
-            return self.root / self.name.format(number=number)
-        else:
-            if self.multiple is True:
-                self.multiple = next(self.root.glob(self.name.format(number="*"))).name
-            elif self.multiple:
-                return self.root / self.multiple
-            else:
-                return self.root / self.name
-
-    def read(self):
-        with self.resolve_path().open("r") as f:
-            return f.read()
-
-    def write(self, data):
-        with self.resolve_path().open("w") as f:
-            return f.write(data)
-
-    def __getitem__(self, key):
-        if self.multiple:
-            return File.create(self.name.format(number=key), self.root)
-        else:
-            return self
-
-    @staticmethod
-    def create(path):
-        if path
-
-class PDBFile(File):
-    def read(self):
-        return parsePDB(str(self.resolve_path()))
-
-    def write(self, data):
-        writePDB(str(self.resolve_path()), data)
-
-class PDBQTFile(File):
-    def read(self):
-        return parsePDB(str(self.resolve_path()))
-
-    def write(self, data):
-        writePDB(str(self.resolve_path()), data)
-
-_property_tree = {
-    "ligand" : {
-        "pdb" : "{code}_ligand.pdb",
-        "mol2" : "{code}_ligand.mol2",
-        "renamed_mol2" : "{code}_ligand_renamed.mol2",
-        "pdbqt" : "{code}_ligand.pdbqt",
-        "params" : "{code}_ligand.params"
-        },
-    "protein" : {
-        "pdb" : "{code}_protein.pdb",
-        "pdbqt" : "{code}_protein.pdbqt"
-        },
-    "complex" : {
-        "pdb" : "{code}_complex.pdb"
-        },
-    "minimized" : {
-        "scores" : "score.sc",
+class _PDB:
+    
+    _instance_dict = {}
+    _property_tree = { "flags_relax" : "flags_relax.txt",
+        "constraints" : "constraints",
         "ligand" : {
-            "mol2" : "{code}_ligand_{number}.mol2",
-            "pdbqt": "{code}_ligand_{number}.pdbqt"
+            "pdb" : "{code}_ligand.pdb",
+            "mol2" : "{code}_ligand.mol2",
+            "renamed_mol2" : "{code}_ligand_renamed.mol2",
+            "pdbqt" : "{code}_ligand.pdbqt",
+            "params" : "{code}_ligand.params"
             },
         "protein" : {
-            "mol2" : "{code}_protein_{number}.mol2",
-            "pdbqt": "{code}_protein_{number}.pdbqt"
+            "pdb" : "{code}_protein.pdb",
+            "pdbqt" : "{code}_protein.pdbqt"
             },
         "complex" : {
-            "pdb": "{code}_protein_{number}.pdb",
-            "pdbqt": "{code}_protein_{number}.pdbqt",
-            "attr": "{code}_protein_{number}.attr"
+            "pdb" : "{code}_complex.pdb"
+            },
+        "minimized" : {
+            "scores" : "score.sc",
+            "hidden_complexes" : "other_complexes",
+            "ligand" : {
+                "mol2" : "{code}_ligand_{number}.mol2",
+                "pdbqt": "{code}_ligand_{number}.pdbqt"
+                },
+            "protein" : {
+                "pdb" : "{code}_protein_{number}.pdb",
+                "mol2" : "{code}_protein_{number}.mol2",
+                "pdbqt": "{code}_protein_{number}.pdbqt"
+                },
+            "complex" : {
+                "pdb": "{code}_complex_{number}.pdb",
+                "pdbqt": "{code}_complex_{number}.pdbqt",
+                "attr": "{code}_complex_{number}.attr"
+                }
+            },
+        "image" : {
+                "rosetta" : "{code}_rosetta.img",
+                "htmd" : "{code}_htmd.img",
+                "electronegativity" : "{code}_electroneg.img"
             }
         }
-    }
+
+    def __init__(self, path):
+        self.path = path
+        self.id = path.name
+        self.metadata_path = path / "metadata.json"
+        if not self.metadata_path.exists():
+            storage.write_json(self.metadata_path, { "completed_steps" : []})
+        self.metadata = storage.read_json(self.metadata_path)
+        _create(_PDB._property_tree, path, self.__dict__)
+        self.image.combined = File.create(f"{self.id}.img", path.parent / settings.options)
+
+    @property
+    def completed_steps(self):
+        return self.metadata["completed_steps"]
+
+    def complete(self, step):
+        self.metadata["completed_steps"].append(step)
+        self.metadata["completed_steps"] = list(set(self.metadata["completed_steps"]))
+        storage.write_json(self.metadata_path, self.metadata)
+    
+    def uncomplete(self, step):
+        try:
+            self.metadata["completed_steps"].remove(step)
+            storage.write_json(self.metadata_path, self.metadata)
+        except ValueError:
+            pass
 
 def PDBObject(path):
-    return _create(_property_tree, path)
+    if str(path.absolute()) not in _PDB._instance_dict:
+        _PDB._instance_dict[str(path.absolute())] = _PDB(path)
+    return _PDB._instance_dict[str(path.absolute())]
 
-def _create(tree, path):
+from Repo.objects.file import File
+
+def _create(tree, path, result=None):
+    root = True
+    if not result:
+        root = False
         result = {}
-        for key, value in tree.iteritems():
-            if instanceof(value) is dict:
-                result[key] = create(value, path)
-            else:
-                result[key] = File.create(value, path)
-        return SimpleNamespace(**result)
+    for key, value in tree.items():
+        if isinstance(value, dict):
+            result[key] = _create(value, path)
+        else:
+            result[key] = File.create(value, path)
+    if root:
+        return result
+    return SimpleNamespace(**result)
 

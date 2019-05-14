@@ -1,3 +1,5 @@
+import numpy as np
+
 def grid_around(center, size, spacing=1.0):
     """Generate an array of 3D positions for a voxel cube of the given size and
     coarseness.
@@ -31,7 +33,7 @@ def clip1d(value, upp_limit):
     low_limit = 0
     if upp_limit < 0:
         upp_limit, low_limit = low_limit, upp_limit
-    return np.clip(value, low_limit, upp_limit) / upp_limit
+    return np.clip(value, low_limit, upp_limit) / (low_limit + upp_limit)
 
 
 def clip(values, limits):
@@ -44,7 +46,7 @@ def clip(values, limits):
     """
     if values.shape[-1] == 1:
         return clip1d(values, limits[0])
-    return np.stack(clip1d(value, limit) for value, limit in zip(values, limits))
+    return np.stack((clip1d(values[...,i], limits[i]) for i in range(values.shape[-1])), axis=-1)
 
 
 def get_keys(pdb):
@@ -72,38 +74,3 @@ def save_grid(saving_path, image):
     with h5py.File(str(saving_path), "w", libver='latest') as f:
         f.create_dataset("grid", dtype='f4', data=image)
 
-
-def get_files(folder):
-    for protein_file in folder.glob('*/*_protein_0*.pdbqt'):
-        pdb = protein_file.parent
-        try:
-            ligand_file = next(pdb.glob('*_ligand_*.pdbqt'))
-        except:
-            continue
-        yield (pdb.stem, protein_file, ligand_file)
-
-
-def process_file(params):
-    pdb, prot, lig = params
-    saving_folder = Path('/cluster/scratch/hhussein/results_min2018_htmd')
-    saving_path = saving_folder / \
-        (prot.name.replace('.pdbqt', '.hdf5').replace('protein', 'complex'))
-    if saving_path.exists():
-        return True
-    print(pdb)
-    try:
-        image = build_images(prot, lig, size)
-    except Exception as e:
-        print(e)
-        return False
-    save_grid(saving_path, pdb, image)
-    return True
-
-
-if __name__ == "__main__":
-    size = 25
-    saving_folder = Path('/cluster/scratch/hhussein/results_min2018_htmd')
-    saving_folder.mkdir(parents=True, exist_ok=True)
-    # process_file(next(get_files(Path('/cluster/scratch/hhussein/pdbbind2018'))))
-    p = Pool(cpu_count())
-    p.map(process_file, get_files(Path('/cluster/scratch/hhussein/pdbbind2018')))

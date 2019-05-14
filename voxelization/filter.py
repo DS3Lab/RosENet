@@ -1,3 +1,7 @@
+import numpy as np
+from scipy.spatial.distance import cdist
+
+
 def exp_12(r, rvdw):
     """Exponential filter as given by Jimenez et al. (2018) 
     10.1021/acs.jcim.7b00650
@@ -33,7 +37,7 @@ def gaussian(r, rvdw):
     return ret
 
 
-def voxel_filter(filter_type, points, values, targets, radii):
+def voxel_filter(filter_type, structure, targets):
     """Method to apply a filter to a set of atom coordinates with assigned 
     values, and distribute them to a set of target points. Atom radii are 
     taken into consideration to adjust strength of contributions.
@@ -51,6 +55,11 @@ def voxel_filter(filter_type, points, values, targets, radii):
     radii : numpy.ndarray
         Van der Waals radii of the atoms.
     """
+    values = structure.values
+    points = structure.coordinates
+    radii = structure.radii
+    shape = targets.shape
+    targets = targets.reshape((-1,3))
     mask = np.linalg.norm(points, axis=-1) <= 12.5*np.sqrt(3)
     points = points[mask]
     values = values[mask, :]
@@ -61,4 +70,5 @@ def voxel_filter(filter_type, points, values, targets, radii):
     result = np.array([values[np.argmax(aux, axis=0), i] * np.max(aux, axis=0)
                        for i in range(values.shape[-1])])
     result = np.swapaxes(result, 0, 1)
+    result = result.reshape(shape[:-1] + (-1,))
     return result
