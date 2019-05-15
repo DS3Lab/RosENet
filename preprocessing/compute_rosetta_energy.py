@@ -1,5 +1,5 @@
 from __future__ import print_function
-from Repo.preprocessing.step import Step
+from DrugDiscovery.preprocessing.step import Step
 import argparse
 import os
 import h5py
@@ -11,7 +11,7 @@ import numpy as np
 from multiprocessing import Pool, cpu_count
 from collections import defaultdict
 from pyrosetta.toolbox.atom_pair_energy import print_residue_pair_energies
-from Repo.preprocessing.minimize_rosetta import MinimizeRosetta
+from DrugDiscovery.preprocessing.minimize_rosetta import MinimizeRosetta
 init('-in:auto_setup_metals') #-mute core.conformation.Conformation')
 
 def compute_atom_pair_energy(pdb_filename,  ligand_params, interface_cutoff = 21.0):

@@ -1,7 +1,7 @@
-from Repo.preprocessing.step import Step
-from Repo.preprocessing.minimize_rosetta import MinimizeRosetta
-import Repo.constants as constants
-import Repo.rosetta.rosetta as rosetta
+from DrugDiscovery.preprocessing.step import Step
+from DrugDiscovery.preprocessing.minimize_rosetta import MinimizeRosetta
+import DrugDiscovery.constants as constants
+import DrugDiscovery.rosetta.rosetta as rosetta
 
 class MakeProteinPDB(metaclass=Step, requirements=[MinimizeRosetta]):
     @classmethod

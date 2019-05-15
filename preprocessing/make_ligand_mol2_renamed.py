@@ -1,6 +1,6 @@
-import Repo.storage.storage as storage
-from Repo.preprocessing.step import Step
-from Repo.preprocessing.make_ligand_params_pdb import MakeLigandParamsPDB
+import DrugDiscovery.storage.storage as storage
+from DrugDiscovery.preprocessing.step import Step
+from DrugDiscovery.preprocessing.make_ligand_params_pdb import MakeLigandParamsPDB
 
 def read_pdb(pdb_path):
     lines = storage.read_plain(pdb_path).splitlines()

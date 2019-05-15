@@ -1,8 +1,8 @@
 from types import SimpleNamespace
-from Repo.storage.storage import *
-import Repo.storage.storage as storage
-import Repo.rosetta.rosetta as rosetta
-from Repo import settings
+from DrugDiscovery.storage.storage import *
+import DrugDiscovery.storage.storage as storage
+import DrugDiscovery.rosetta.rosetta as rosetta
+from DrugDiscovery import settings
 
 class _PDB:
     
@@ -79,9 +79,8 @@ def PDBObject(path):
         _PDB._instance_dict[str(path.absolute())] = _PDB(path)
     return _PDB._instance_dict[str(path.absolute())]
 
-from Repo.objects.file import File
-
 def _create(tree, path, result=None):
+    from DrugDiscovery.objects.file import File
     root = True
     if not result:
         root = False

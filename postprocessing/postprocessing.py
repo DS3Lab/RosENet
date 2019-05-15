@@ -1,6 +1,6 @@
 import numpy as np
 import tensorflow as tf
-from Repo.storage import storage
+from DrugDiscovery.storage import storage
 
 def combine_maps(pdb_object):
     features = [pdb_object.image.htmd.read(),
@@ -15,7 +15,9 @@ def combine_maps(pdb_object):
 
 def serialize_file(file, target):
     datapoint = storage.read_image(file)
+    print(datapoint.shape)
     features = datapoint.flatten()
+    print(features.shape)
     label = bytes(file.stem,"utf-8")
     example = tf.train.Example(features=tf.train.Features(feature={
             'id' : tf.train.Feature(bytes_list=tf.train.BytesList(value=[label])),
@@ -41,7 +43,6 @@ def generate_tfrecords(dataset_object):
   storage.make_directory(dataset_object.tfrecords, no_fail=True)
   lines = dataset_object.labels.read().splitlines()
   pdb_labels = dict([tuple(line.split(" ")) for line in lines])
-  print(pdb_labels)
   for i, chunk in enumerate(chunks):
       write_tfrecords(chunk, dataset_object, i, pdb_labels)
 

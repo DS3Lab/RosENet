@@ -53,7 +53,8 @@ def write_pdb(pdb_path, pdb):
 
 def write_tfrecords(path, data):
     with tf.python_io.TFRecordWriter(str(path)) as writer:
-        writer.write(data)
+        for datum in data:
+            writer.write(datum)
 
 def read_attributes(attr_path):
     return np.load(str(attr_path).strip(".npz")+".npz")

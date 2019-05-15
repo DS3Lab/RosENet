@@ -2,9 +2,9 @@ from string import Template
 from .make_complex_pdb import make_complex_pdb as _make_complex_pdb
 from .make_ligand_mol2_renamed import make_ligand_mol2_renamed as _make_ligand_mol2_renamed
 from .compute_rosetta_energy import compute_rosetta_energy as _compute_rosetta_energy
-import Repo.rosetta.rosetta as rosetta
-import Repo.storage.storage as storage 
-import Repo.constants as constants
+import DrugDiscovery.rosetta.rosetta as rosetta
+import DrugDiscovery.storage.storage as storage 
+import DrugDiscovery.constants as constants
 import subprocess
 
 def make_ligand_params_pdb(pdb_object):

@@ -1,7 +1,7 @@
-from Repo.preprocessing.step import Step
-from Repo.preprocessing.make_protein_pdb import MakeProteinPDB
-from Repo.preprocessing.make_ligand_mol2 import MakeLigandMOL2
-import Repo.constants as constants
+from DrugDiscovery.preprocessing.step import Step
+from DrugDiscovery.preprocessing.make_protein_pdb import MakeProteinPDB
+from DrugDiscovery.preprocessing.make_ligand_mol2 import MakeLigandMOL2
+import DrugDiscovery.constants as constants
 import subprocess
 
 class MakePDBQT(metaclass=Step, requirements=[MakeProteinPDB, MakeLigandMOL2]):

@@ -6,8 +6,8 @@ from itertools import compress
 from prody import parsePDB, calcCenter, moveAtoms
 from mendeleev import element
 from types import SimpleNamespace
-from Repo.preprocessing.make_pdbqt import MakePDBQT
-from Repo.preprocessing.compute_rosetta_energy import ComputeRosettaEnergy
+from DrugDiscovery.preprocessing.make_pdbqt import MakePDBQT
+from DrugDiscovery.preprocessing.compute_rosetta_energy import ComputeRosettaEnergy
 from .utils import *
 from .filter import voxel_filter
 from .interpolation import voxel_interpolation

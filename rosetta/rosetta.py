@@ -1,6 +1,6 @@
 import subprocess
 from collections import OrderedDict
-import Repo.constants as constants
+import DrugDiscovery.constants as constants
 from io import StringIO
 import pandas as pd
 

@@ -1,6 +1,6 @@
 from .voxelizers import VoxelizeHTMD, VoxelizeRosetta, VoxelizeElectronegativity
-from Repo.postprocessing.postprocessing import combine_maps
-from Repo import settings
+from DrugDiscovery.postprocessing.postprocessing import combine_maps
+from DrugDiscovery import settings
 
 def voxelize(pdb_object):
     VoxelizeHTMD(pdb_object, settings.size)

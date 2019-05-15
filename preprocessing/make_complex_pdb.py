@@ -1,8 +1,8 @@
 import numpy as np
-from Repo.preprocessing.make_ligand_params_pdb import MakeLigandParamsPDB
-from Repo.preprocessing.step import Step
+from DrugDiscovery.preprocessing.make_ligand_params_pdb import MakeLigandParamsPDB
+from DrugDiscovery.preprocessing.step import Step
 from prody import parsePDB, writePDB
-import Repo.constants as constants
+import DrugDiscovery.constants as constants
 from htmd.molecule.molecule import Molecule
 from htmd.molecule.voxeldescriptors import getVoxelDescriptors
 from htmd.builder.preparation import proteinPrepare

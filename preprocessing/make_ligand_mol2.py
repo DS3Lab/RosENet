@@ -1,6 +1,6 @@
-from Repo.preprocessing.step import Step
-import Repo.rosetta.rosetta as rosetta
-from Repo.preprocessing.make_ligand_mol2_renamed import MakeLigandMOL2Renamed
+from DrugDiscovery.preprocessing.step import Step
+import DrugDiscovery.rosetta.rosetta as rosetta
+from DrugDiscovery.preprocessing.make_ligand_mol2_renamed import MakeLigandMOL2Renamed
 
 class MakeLigandMOL2(metaclass=Step,requirements=[MakeLigandMOL2Renamed]):
     @classmethod

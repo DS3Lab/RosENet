@@ -1,7 +1,7 @@
-from Repo.storage.storage import *
-from Repo.objects.pdb import PDBObject
-import Repo.storage.storage as storage
-import Repo.rosetta.rosetta as rosetta
+from DrugDiscovery.storage.storage import *
+from DrugDiscovery.objects.pdb import PDBObject
+import DrugDiscovery.storage.storage as storage
+import DrugDiscovery.rosetta.rosetta as rosetta
 
 class File:
     def __init__(self, name, root):

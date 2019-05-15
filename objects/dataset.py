@@ -1,7 +1,7 @@
-import Repo.storage.storage as storage
-from Repo.objects.pdb import PDBObject
-from Repo.objects.file import TFRecordsFile, File
-import Repo.settings as settings
+import DrugDiscovery.storage.storage as storage
+from DrugDiscovery.objects.pdb import PDBObject
+from DrugDiscovery.objects.file import TFRecordsFile, File
+import DrugDiscovery.settings as settings
 
 class _Dataset:
     _instance_dict = {}
@@ -33,6 +33,9 @@ class _Dataset:
     @property
     def labels(self):
         return File("labels", self.path)
+
+    def model(self, model_object, channels, seed):
+        return self.path / f"_{model_object.name}_{channels}_{seed}"
 
 def DatasetObject(path):
     if str(path.absolute()) not in _Dataset._instance_dict:

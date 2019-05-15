@@ -133,11 +133,11 @@ def all_rot_90(X,shape):
                 x, y, z = ((np.array([0,1,2]) + shift) % 3)
                 for flip in [None,(0,1),(0,2),(1,2)]:
                     aux = point.transpose((x,y,z,3))
-                if flip is not None:
-                    a,b = flip
-                    results.append(np.flip(aux,(a,b)))
-                else:
-                    results.append(aux)
+                    if flip is not None:
+                        a,b = flip
+                        results.append(np.flip(aux,(a,b)))
+                    else:
+                        results.append(aux)
             for shift in range(3):
                 x, y, z = ((np.array([1,0,2]) + shift) % 3)
                 for flip in [0,1,2,None]:

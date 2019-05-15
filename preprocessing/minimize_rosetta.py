@@ -1,9 +1,9 @@
-from Repo.preprocessing.step import Step
-from Repo.preprocessing.make_complex_pdb import MakeComplexPDB
+from DrugDiscovery.preprocessing.step import Step
+from DrugDiscovery.preprocessing.make_complex_pdb import MakeComplexPDB
 from string import Template
-import Repo.constants as constants
-import Repo.rosetta.rosetta as rosetta
-import Repo.storage.storage as storage
+import DrugDiscovery.constants as constants
+import DrugDiscovery.rosetta.rosetta as rosetta
+import DrugDiscovery.storage.storage as storage
 
 def generate_minimization_flags_file(pdb_object):
     complex_path = pdb_object.complex.pdb.path

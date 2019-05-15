@@ -1,5 +1,5 @@
-from Repo.preprocessing.step import Step
-import Repo.rosetta.rosetta as rosetta
+from DrugDiscovery.preprocessing.step import Step
+import DrugDiscovery.rosetta.rosetta as rosetta
 
 class MakeLigandParamsPDB(metaclass=Step):
 

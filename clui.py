@@ -3,10 +3,12 @@ import os
 import sys
 from argparse import ArgumentParser
 from pathlib import Path
-from Repo.objects.dataset import DatasetObject
-from Repo.preprocessing import preprocess
-from Repo.voxelization import voxelize
-from Repo.postprocessing import postprocess
+from DrugDiscovery.objects.model import ModelObject
+from DrugDiscovery.objects.dataset import DatasetObject
+from DrugDiscovery.preprocessing import preprocess
+from DrugDiscovery.voxelization import voxelize
+from DrugDiscovery.postprocessing import postprocess
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 def parse_arguments():
     arguments = sys.argv[1:]
@@ -22,7 +24,7 @@ def parse_arguments():
     os.environ["CUDA_VISIBLE_DEVICES"]=""
     if gpu is not None:
         os.environ["CUDA_VISIBLE_DEVICES"]=gpu
-    from Repo.network.network import train, evaluate, predict
+    from DrugDiscovery.network.network import train, evaluate, predict
     parser = ArgumentParser(description="DrugDiscovery Tool",
                             usage='''tool <command> [<args>]
 
@@ -37,17 +39,18 @@ predict			Predict binding affinity
     parser.add_argument("dataset", help='Dataset path')
     args = parser.parse_args(arguments[1:3])
     action  = args.action
-    dataset = Path(args.dataset)
+    dataset = DatasetObject(Path(args.dataset))
     if action in ["train", "evaluate", "predict"]:
         parser = ArgumentParser()
         parser.add_argument("validation_dataset")
         parser.add_argument("network")
         parser.add_argument("channels")
-        parser.add_argument("seed", default=None, required=False)
+        parser.add_argument("seed", default=None)
         args = parser.parse_args(arguments[3:7])
         other_dataset= DatasetObject(Path(args.validation_dataset))
-        network = args.network
-    dataset_object = DatasetObject(dataset)
+        network = ModelObject(Path(args.network))
+        channels = args.channels
+        seed = int(args.seed)
     if action in ["preprocess", "voxelize"]:
         pdbs = dataset_object.list()
         pdbs = map(dataset_object.__getitem__, pdbs)
@@ -57,15 +60,15 @@ predict			Predict binding affinity
     elif action == "voxelize":
         p.map(voxelize, pdbs)
     elif action == "postprocess":
-        postprocess(dataset_object)
+        postprocess(dataset)
     if action == "train":
-        from Repo.network.network import train
+        from DrugDiscovery.network.network import train
         train(dataset, other_dataset, network, seed, channels)
     elif action == "evaluate":
-        from Repo.network.network import evaluate
+        from DrugDiscovery.network.network import evaluate
         evaluate(dataset, other_dataset, network, seed, channels)
     elif action == "predict":
-        from Repo.network.network import predict
+        from DrugDiscovery.network.network import predict
         predict(dataset, other_dataset, network, seed, channels)
 
 #def preprocess(pdb_object):
