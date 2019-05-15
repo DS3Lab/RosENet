@@ -55,7 +55,7 @@ test_dataset\
              labels
 ```
 
-A valid `labels` folder:
+A valid `labels` file:
 ```
 10gs 12
 ```
