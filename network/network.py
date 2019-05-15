@@ -7,6 +7,19 @@ from DrugDiscovery.network.utils import save_results
 import time
 
 def train(dataset_train, dataset_evaluate, model_object, seed=None, channels=""):
+    """Training method
+
+    dataset_train : DatasetObject
+        Dataset to be used as training set
+    dataset_evaluate : DatasetObject
+        Dataset to be used as validation set
+    model_object : ModelObject
+        CNN model to train
+    seed : int
+        Seed for initializing randomness. If None, a random seed will be used.
+    channels : string
+        Channels selectors for choosing feature subsets
+    """
     if seed is None:
         seed = random.randint(0,2147483647)
     tf.set_random_seed(seed)
@@ -34,6 +47,19 @@ def train(dataset_train, dataset_evaluate, model_object, seed=None, channels="")
         save_results(model_train_object, channels, min_validation, epoch_min_validation, seed)
 
 def evaluate(dataset_train, dataset_evaluate, model_object, seed, channels=""):
+    """Evaluation method
+
+    dataset_train : DatasetObject
+        Dataset used during the training phase
+    dataset_evaluate : DatasetObject
+        Dataset to be evaluated
+    model_object : ModelObject
+        CNN model used during the training phase
+    seed : int
+        Seed for initializing randomness. If None, a random seed will be used.
+    channels : string
+        Channels selectors for choosing feature subsets
+    """
     model_train_object = model_object.train_object(dataset_train, channels, seed)
     model_valid_object = model_object.evaluate_object(dataset_evaluate, channels, seed)
     with tf.Session() as sess:
@@ -44,6 +70,19 @@ def evaluate(dataset_train, dataset_evaluate, model_object, seed, channels=""):
     return val_loss
 
 def predict(dataset_train, dataset_predict, model_object, seed, channels=""):
+    """Predict method
+
+    dataset_train : DatasetObject
+        Dataset used during the training phase
+    dataset_evaluate : DatasetObject
+        Dataset to be predicted
+    model_object : ModelObject
+        CNN model used during the training phase
+    seed : int
+        Seed for initializing randomness. If None, a random seed will be used.
+    channels : string
+        Channels selectors for choosing feature subsets
+    """
     model_train_object = model_object.train_object(dataset_train, channels, seed)
     model_pred_object = model_object.predict_object(dataset_predict, channels, seed)
     with tf.Session() as sess:

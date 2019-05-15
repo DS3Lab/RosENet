@@ -4,7 +4,14 @@ import numpy as np
 from DrugDiscovery.network.utils import random_rot, rots_90, random_rot_90, all_rot_90
 import DrugDiscovery.settings as settings
 
-def parse_fn(training,shape):
+def parse_fn(shape):
+    """Parse function for the TensorFlow pipeline.
+    The inner function outputs three tensors: the name of the complex,
+    the image and the target binding affinity.
+
+    shape : list of int
+        4D Shape of the image inputted
+    """
     def fn(example):
         example_fmt = {
         "id": tf.VarLenFeature(tf.string),
@@ -19,6 +26,14 @@ def parse_fn(training,shape):
     return fn
 
 def rotate_fn(training, shape):
+    """Rotation function for the TensorFlow pipeline.
+    The inner function rotates the images. If training, the image will be rotated randomly to one of its 24 90º rotations. Otherwise, each image will be expanded to 24 images representing all possible 90º rotations.
+
+    training : bool
+        True if training
+    shape : list of int
+        4D Shape of the images inputted
+    """
     def fn(id, X, y):
         if training:
             X = random_rot_90(X,list((-1,) + tuple(shape)))
@@ -28,6 +43,16 @@ def rotate_fn(training, shape):
     return fn
 
 def take_channels(ch, channel_order):
+    """Extraction function for the TensorFlow pipeline.
+    Given a list of channels to be extracted and a list of total channels,
+    the inner function will output a new image tensor with only the
+    selected channels.
+
+    ch : list of string
+        List of channels to be extracted
+    channel_order : list of string
+        Ordered list of the channels in the current input tensor
+    """
     idx = [i for i,x in enumerate(channel_order) if x in ch]
     def f(id, X, y):
         ret = tf.gather(X,idx,axis=-1)
@@ -35,6 +60,19 @@ def take_channels(ch, channel_order):
     return ch, f
 
 def make_input_fn(input_path, shape, training, rot, merge):
+    """Create TensorFlow input pipeline.
+
+    input_path : pathlib.Path
+        Globbed path for the .tfrecord files
+    shape : list of int
+        4D Shape of the images inputted
+    training : bool
+        True if training
+    rot : bool
+        True if rotations are enabled
+    param merge :
+        List of channel selectors to extract channels
+    """
     def in_fn():
         channel_order = ['htmd_hydrophobic',
                          'htmd_aromatic',
@@ -96,6 +134,17 @@ def make_input_fn(input_path, shape, training, rot, merge):
     return in_fn
 
 def load_fn(dataset_object, channels, rotate, training):
+    """Create input pipeline function.
+
+    dataset_object : DatasetObject
+        Dataset for the images being used
+    channels : list of string
+        Channel selectors to use
+    rotate : bool
+        True if rotations are enabled
+    training : bool
+        True if training
+    """
 	name = dataset_object.name
 	shape = [settings.size]*3 + [30]
 	training = (training == tf.estimator.ModeKeys.TRAIN)

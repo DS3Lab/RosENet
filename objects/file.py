@@ -4,6 +4,10 @@ import DrugDiscovery.storage.storage as storage
 import DrugDiscovery.rosetta.rosetta as rosetta
 
 class File:
+    """Base class for file management. Represents any file, which name may be 
+    generic. It allows for read/write access and templates the name of the file
+    according to the PDB code(root folder name) and the number of the file (for
+    when it represents the result of the Rosetta minimization)"""
     def __init__(self, name, root):
         self.root = root
         self.code = root.name

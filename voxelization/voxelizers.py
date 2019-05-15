@@ -286,6 +286,15 @@ class HTMDVoxelizer(Voxelizer):
         self.image = np.concatenate((self.protein.image, self.ligand.image), axis=-1)
 
 def VoxelizeRosetta(pdb_object, method, size):
+    """Wrapper function for voxelizing and storing Rosetta features.
+
+    pdb_object : PDBObject
+        PDB structure to voxelize.
+    method : tuple of (string, string or callable)
+        Voxelization method and function. See underlying function for more information.
+    size : int
+        Size of voxel cube side.
+    """
     if not ComputeRosettaEnergy.computed(pdb_object):
         return False
     complex_path = pdb_object.minimized.complex.pdb.path
@@ -298,6 +307,15 @@ def VoxelizeRosetta(pdb_object, method, size):
     return True
 
 def VoxelizeElectronegativity(pdb_object, method, size):
+    """Wrapper function for voxelizing and storing electronegativity features.
+
+    pdb_object : PDBObject
+        PDB structure to voxelize.
+    method : tuple of (string, string or callable)
+        Voxelization method and function. See underlying function for more information.
+    size : int
+        Size of voxel cube side.
+    """
     if not ComputeRosettaEnergy.computed(pdb_object):
         return False
     complex_path = pdb_object.minimized.complex.pdb.path
@@ -309,6 +327,13 @@ def VoxelizeElectronegativity(pdb_object, method, size):
     pdb_object.image.electronegativity.write(voxelizer.image)
 
 def VoxelizeHTMD(pdb_object, size):
+    """Wrapper function for voxelizing and storing HTMD features.
+
+    pdb_object : PDBObject
+        PDB structure to voxelize.
+    size : int
+        Size of voxel cube side.
+    """
     if not MakePDBQT.computed(pdb_object):
         return False
     protein_path = pdb_object.minimized.protein.pdbqt.path

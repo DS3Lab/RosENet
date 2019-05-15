@@ -5,6 +5,7 @@ import DrugDiscovery.rosetta.rosetta as rosetta
 from DrugDiscovery import settings
 
 class _PDB:
+    """Inner PDB class. Represents a PDB structure (a folder with a protein.pdb and ligand.mol2 files)."""
     
     _instance_dict = {}
     _property_tree = { "flags_relax" : "flags_relax.txt",

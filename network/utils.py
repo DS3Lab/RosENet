@@ -2,10 +2,20 @@ import tensorflow as tf
 import numpy as np
 
 def save_results(model_train_object, channels="", *args):
+    """Save information about a trained model in csv format.
+
+    model_train_object : _ModelTrain
+        ModelTrain object representing the instantiation of the training
+    channels : string
+        Channel selectors used for the training
+    args : list of various
+        Data to be written in the file
+    """
     result_line = ",".join([model_train_object.dataset_name, model_train_object.model_name] +  [str(a) for a in args]) + "\n"
     model_train_object.results.write(model_train_object.results.read()+result_line)
 
 def random_rotation_matrix():
+    """Create a random 3D matrix in TensorFlow"""
     A = tf.random_normal((3,3))
     Q, _ = tf.linalg.qr(A)
     Q = tf.convert_to_tensor([[tf.sign(tf.linalg.det(Q)),0,0],

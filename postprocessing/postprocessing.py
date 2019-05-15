@@ -3,6 +3,13 @@ import tensorflow as tf
 from DrugDiscovery.storage import storage
 
 def combine_maps(pdb_object):
+    """Postprocessing step for combining the feature map images into one image
+
+    Parameters
+    ----------
+    pdb_object : PDBObject
+        PDB object which images will be combined
+    """
     features = [pdb_object.image.htmd.read(),
                 pdb_object.image.electronegativity.read(),
                 pdb_object.image.rosetta.read()]
@@ -14,6 +21,15 @@ def combine_maps(pdb_object):
 
 
 def serialize_file(file, target):
+    """Serialize image file to Tensorflow serialized format
+
+    Parameters
+    ----------
+    file : pathlib.Path
+        Path for the image file.
+    target : float
+        Ground truth binding affinity for the image.
+    """
     datapoint = storage.read_image(file)
     print(datapoint.shape)
     features = datapoint.flatten()
@@ -26,23 +42,46 @@ def serialize_file(file, target):
             }))
     return example.SerializeToString()
 
-def write_tfrecords(files, root_object, number, labels):
+def write_tfrecords(files, dataset_object, number, labels):
+    """Serialize the given images and store them in a TFRecords file, together with their binding affinity values.
+
+    files : list of pathlib.Path
+        List of files to be written inside the TFRecords file.
+    dataset_object : DatasetObject
+        Dataset of the images.
+    number : int
+        ID number of the TFRecords file.
+    labels : dict
+        Dictionary relating image names to their binding affinities.
+    """
     output = [serialize_file(file, float(labels[file.stem])) for file in files]
-    root_object.tfrecord(number).write(output)
+    dataset_object.tfrecord(number).write(output)
 
 def chunk_by_size(files, recommended_tf_size=float(100*(2**20))):
-  average_size = sum(map(lambda x: x.stat().st_size, files)) / float(len(files))
-  files_per_chunk = np.ceil(recommended_tf_size / average_size)
-  chunks = int(np.ceil(float(len(files)) / files_per_chunk))
-  return np.array_split(np.array(files), chunks)
+    """Split the images into chunks according to the TFRecords recommended size, which is 100MB.
+
+    files : list of pathlib.Path
+        List of image paths to be split.
+    recommended_tf_size : float
+        Maximum size of each chunk, 100MB by default.
+    """
+    average_size = sum(map(lambda x: x.stat().st_size, files)) / float(len(files))
+    files_per_chunk = np.ceil(recommended_tf_size / average_size)
+    chunks = int(np.ceil(float(len(files)) / files_per_chunk))
+    return np.array_split(np.array(files), chunks)
 
 def generate_tfrecords(dataset_object):
-  files = dataset_object.images
-  chunks= chunk_by_size(files)
-  storage.clear_directory(dataset_object.tfrecords, no_fail=True)
-  storage.make_directory(dataset_object.tfrecords, no_fail=True)
-  lines = dataset_object.labels.read().splitlines()
-  pdb_labels = dict([tuple(line.split(" ")) for line in lines])
-  for i, chunk in enumerate(chunks):
-      write_tfrecords(chunk, dataset_object, i, pdb_labels)
+    """Generate TFRecords from a dataset's combined images.
+
+    dataset_object : DatasetObject
+        Dataset of the images.
+    """
+    files = dataset_object.images
+    chunks= chunk_by_size(files)
+    storage.clear_directory(dataset_object.tfrecords, no_fail=True)
+    storage.make_directory(dataset_object.tfrecords, no_fail=True)
+    lines = dataset_object.labels.read().splitlines()
+    pdb_labels = dict([tuple(line.split(" ")) for line in lines])
+    for i, chunk in enumerate(chunks):
+        write_tfrecords(chunk, dataset_object, i, pdb_labels)
 

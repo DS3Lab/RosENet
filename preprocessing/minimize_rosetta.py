@@ -6,6 +6,11 @@ import DrugDiscovery.rosetta.rosetta as rosetta
 import DrugDiscovery.storage.storage as storage
 
 def generate_minimization_flags_file(pdb_object):
+    """Generate minimization flags file for Rosetta minimization.
+
+    pdb_object : PDBObject
+        PDB structure to be handled
+    """
     complex_path = pdb_object.complex.pdb.path
     complex = complex_path.name
     name = complex_path.stem
@@ -18,6 +23,12 @@ def generate_minimization_flags_file(pdb_object):
     pdb_object.flags_relax.write(output)
 
 def generate_constraint_file(pdb_object):
+    """Generate constraint file for Rosetta minimization.
+    Constraints are added to maintain contact ions close to their original positions.
+
+    pdb_object : PDBObject
+        PDB structure to be handled
+    """
     complex = pdb_object.complex.pdb.read()
     output_path = pdb_object.constraints.path
     metals = complex.select(constants.metal_selector)
@@ -36,6 +47,12 @@ def generate_constraint_file(pdb_object):
             [f"AtomPair {r[0]} {r[1]} {r[2]} {r[3]} SQUARE_WELL 2.5 -2000\n" for r in results])
 
 def hide_non_minimal_complexes(pdb_object):
+    """Generate constraint file for Rosetta minimization.
+    Constraints are added to maintain contact ions close to their original positions.
+
+    pdb_object : PDBObject
+        PDB structure to be handled
+    """
     scores = rosetta.parse_scores(pdb_object.minimized.scores.read())
     hidden_folder = pdb_object.minimized.hidden_complexes.path
     storage.make_directory(hidden_folder)
@@ -48,6 +65,11 @@ def hide_non_minimal_complexes(pdb_object):
 class MinimizeRosetta(metaclass=Step, requirements=[MakeComplexPDB]):
     @classmethod
     def files(cls, pdb_object):
+        """List of files being created
+
+        pdb_object : PDBObject
+            PDB structure being handled
+        """
         return [pdb_object.flags_relax,
                 pdb_object.constraints,
                 pdb_object.minimized.hidden_complexes,
@@ -56,6 +78,11 @@ class MinimizeRosetta(metaclass=Step, requirements=[MakeComplexPDB]):
 
     @classmethod
     def _run(cls, pdb_object):
+        """Inner function for the preprocessing step.
+
+        pdb_object : PDBObject
+            PDB structure being handled
+        """
         generate_minimization_flags_file(pdb_object)
         generate_constraint_file(pdb_object)
         rosetta.minimize(working_directory = pdb_object.path)

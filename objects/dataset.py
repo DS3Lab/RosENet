@@ -4,6 +4,7 @@ from DrugDiscovery.objects.file import TFRecordsFile, File
 import DrugDiscovery.settings as settings
 
 class _Dataset:
+    """Inner dataset class. Represents a dataset (which stores PDB structure folders inside)."""
     _instance_dict = {}
     def __init__(self, path):
         self.path = path

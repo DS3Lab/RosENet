@@ -1,5 +1,6 @@
 import multiprocessing
 import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import sys
 from argparse import ArgumentParser
 from pathlib import Path
@@ -8,9 +9,9 @@ from DrugDiscovery.objects.dataset import DatasetObject
 from DrugDiscovery.preprocessing import preprocess
 from DrugDiscovery.voxelization import voxelize
 from DrugDiscovery.postprocessing import postprocess
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 def parse_arguments():
+    """Parse arguments and perform the selected action."""
     arguments = sys.argv[1:]
     optional_parser = ArgumentParser()
     optional_parser.add_argument("--njobs", default=None)
@@ -41,11 +42,22 @@ predict			Predict binding affinity
     action  = args.action
     dataset = DatasetObject(Path(args.dataset))
     if action in ["train", "evaluate", "predict"]:
-        parser = ArgumentParser()
+        parser = ArgumentParser(usage=
+'''{train,evaluate,predict} second_dataset network channels [seed]
+
+second_dataset has the following meanings:
+If action is train:     second_dataset is the validation dataset
+If action is evaluate:  second_dataset is the evaluation dataset
+If action is predict:   second_dataset is the prediction dataset
+
+In training if no seed is given, it will be randomly chosen
+The seed is necesary for evaluation and prediction to chose the
+correct instance of the trained model.
+''')
         parser.add_argument("validation_dataset")
         parser.add_argument("network")
         parser.add_argument("channels")
-        parser.add_argument("seed", default=None)
+        parser.add_argument("seed", nargs="?", default=None)
         args = parser.parse_args(arguments[3:7])
         other_dataset= DatasetObject(Path(args.validation_dataset))
         network = ModelObject(Path(args.network))
@@ -70,16 +82,3 @@ predict			Predict binding affinity
     elif action == "predict":
         from DrugDiscovery.network.network import predict
         predict(dataset, other_dataset, network, seed, channels)
-
-#def preprocess(pdb_object):
-#    ComputeRosettEnergies.run_until(pdb_object,callbacks=[lambda x: print(x)])
-#    MakePDBQT.run_until(pdb_object,callbacks=[lambda x: print(x)])
-#
-#def voxelize(pdb_object):
-#    VoxelizeHTMD(test_object, settings.size)
-#    VoxelizeRosetta(test_object, settings.voxelization, settings.size)
-#    VoxelizeElectronegativity(test_object, settings.voxelization, settings.size)
-#    combine_maps(pdb_object)
-
-#def postprocess(dataset_object):
-#    generate_tfrecords(dataset_object)

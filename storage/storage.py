@@ -1,3 +1,7 @@
+"""
+Storage module to centralize and abstract most of the IO operations in the project.
+"""
+
 from prody import parsePDB, writePDB
 import shutil
 import h5py
@@ -29,12 +33,10 @@ def move(origin, destination, no_fail=False):
 def read_image(image_path):
     with h5py.File(str(image_path), "r") as f:
         return np.array(f["grid"])
-    #return settings.storage_provider.image.read_image(image_path)
 
 def write_image(image_path, image):
     with h5py.File(str(image_path), "w", libver='latest') as f:
         f.create_dataset("grid", dtype='f4', data=image)
-    #return settings.storage_provider.image.write_image(image_path, image)
 
 def read_json(json_path):
     with json_path.open("r") as f:
@@ -66,7 +68,6 @@ def read_plain(file_path):
     with open(file_path, "r") as f:
         data = f.read()
     return data
-    #return settings.storage_provider.image.read_image(image_path)
 
 def write_plain(file_path, text):
     with open(file_path, "w") as f:
@@ -77,4 +78,3 @@ def write_plain(file_path, text):
                 f.write(line.strip("\n")+"\n")
         else:
             f.write(str(text))
-    #return settings.storage_provider.image.write_image(image_path, image)

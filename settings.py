@@ -1,3 +1,6 @@
+"""
+Changeable settings for the project.
+"""
 from DrugDiscovery.voxelization.filter import exp_12
 size = 25
 voxelization_type = "filter"

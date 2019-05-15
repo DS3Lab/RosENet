@@ -7,6 +7,8 @@ import numpy as np
 from DrugDiscovery.objects.file import File
 
 class _ModelAction:
+    """Model action base class. Represents an action (training, evaluation or prediction)
+    of a dataset using a model(neural network)"""
     def __init__(self, model_object, dataset_object, channels, action, seed):
         self.dataset_object = dataset_object
         if not self.results.path.exists():
@@ -120,6 +122,7 @@ class _ModelPredict(_ModelAction):
       return self.prediction_dict
 
 class _Model:
+    """Inner Model class, represents a CNN."""
     _instance_dict = {}
     def __init__(self, path):
         self.path = path

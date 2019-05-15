@@ -15,78 +15,94 @@ from DrugDiscovery.preprocessing.minimize_rosetta import MinimizeRosetta
 init('-in:auto_setup_metals') #-mute core.conformation.Conformation')
 
 def compute_atom_pair_energy(pdb_filename,  ligand_params, interface_cutoff = 21.0):
-  if type(ligand_params) is str:
-    ligand_params = [ligand_params]
-  ligand_params = Vector1([str(ligand_params)])
+    """Compute pairwise energies and aggregate them to atom-wise values.
 
-  pose = Pose()
-  res_set = pose.conformation().modifiable_residue_type_set_for_conf()
-  res_set.read_files_for_base_residue_types( ligand_params )
-
-  pose.conformation().reset_residue_type_set_for_conf( res_set )
-  pose_from_file(pose, str(pdb_filename))
-  scorefxn = create_score_function('ref2015')
-  pose_score = scorefxn(pose)
-
-  #detect interface
-  fold_tree = pose.fold_tree()
-  for jump in range(1, pose.num_jump()+1):
-    name = pose.residue(fold_tree.downstream_jump_residue(jump)).name()
-    if name == 'WER':
-      break
-  interface = Interface(jump)
-  interface.distance(interface_cutoff)
-  interface.calculate(pose)
-
-  energies = []
-  en = defaultdict(lambda:np.zeros((1,4)))
-  keys = []
-  for rnum1 in range(1, pose.total_residue() + 1):
-    if interface.is_interface(rnum1):
-      r1 = pose.residue(rnum1)
-      for a1 in range(1, len(r1.atoms()) + 1):
-        seq1 = pose.pdb_info().pose2pdb(rnum1).strip().replace(' ','-')
-        at1 = r1.atom_name(a1).strip()
-        key1 = seq1 + '-' + at1
-        for rnum2 in range(rnum1+1, pose.total_residue() + 1):
-          if interface.is_interface(rnum2):
-            r2 = pose.residue(rnum2)
-            for a2 in range(1, len(r2.atoms())+1):
-              seq2 = pose.pdb_info().pose2pdb(rnum2).strip().replace(' ','-')
-              at2 = r2.atom_name(a2).strip()
-              key2 = seq2 + '-' + at2
-              ee = etable_atom_pair_energies(r1, a1, r2, a2, scorefxn)
-              if all(e == 0.0 for e in ee):
-                continue
-              en[key1] += np.array(ee)
-              en[key2] += np.array(ee)
-  energy_matrix = np.array([v for v in en.values()])
-  return list(en.keys()), energy_matrix
+    pdb_filename : pathlib.Path
+        Path for the complex pdb file
+    ligand_params : pathlib.Path
+        Path for the ligand params file
+    interface_cutoff : float
+        Distance for which to check pairwise interactions between atoms
+    """
+    if type(ligand_params) is str:
+        ligand_params = [ligand_params]
+    ligand_params = Vector1([str(ligand_params)])
+  
+    pose = Pose()
+    res_set = pose.conformation().modifiable_residue_type_set_for_conf()
+    res_set.read_files_for_base_residue_types( ligand_params )
+  
+    pose.conformation().reset_residue_type_set_for_conf( res_set )
+    pose_from_file(pose, str(pdb_filename))
+    scorefxn = create_score_function('ref2015')
+    pose_score = scorefxn(pose)
+  
+    #detect interface
+    fold_tree = pose.fold_tree()
+    for jump in range(1, pose.num_jump()+1):
+        name = pose.residue(fold_tree.downstream_jump_residue(jump)).name()
+        if name == 'WER':
+            break
+    interface = Interface(jump)
+    interface.distance(interface_cutoff)
+    interface.calculate(pose)
+  
+    energies = []
+    en = defaultdict(lambda:np.zeros((1,4)))
+    keys = []
+    for rnum1 in range(1, pose.total_residue() + 1):
+        if interface.is_interface(rnum1):
+            r1 = pose.residue(rnum1)
+            for a1 in range(1, len(r1.atoms()) + 1):
+                seq1 = pose.pdb_info().pose2pdb(rnum1).strip().replace(' ','-')
+                at1 = r1.atom_name(a1).strip()
+                key1 = seq1 + '-' + at1
+                for rnum2 in range(rnum1+1, pose.total_residue() + 1):
+                    if interface.is_interface(rnum2):
+                        r2 = pose.residue(rnum2)
+                        for a2 in range(1, len(r2.atoms())+1):
+                            seq2 = pose.pdb_info().pose2pdb(rnum2).strip().replace(' ','-')
+                            at2 = r2.atom_name(a2).strip()
+                            key2 = seq2 + '-' + at2
+                            ee = etable_atom_pair_energies(r1, a1, r2, a2, scorefxn)
+                            if all(e == 0.0 for e in ee):
+                                continue
+                            en[key1] += np.array(ee)
+                            en[key2] += np.array(ee)
+    energy_matrix = np.array([v for v in en.values()])
+    return list(en.keys()), energy_matrix
 
 def get_radii_and_charges(pdb_filename, ligand_params):
-  keys = []
-  charges = []
-  radii = []
+    """Compute radii and charges for the atoms of the complex.
 
-  if type(ligand_params) is str:
-    ligand_params = [ligand_params]
-  ligand_params = Vector1([str(ligand_params)])
-
-  pose = Pose()
-  res_set = pose.conformation().modifiable_residue_type_set_for_conf()
-  res_set.read_files_for_base_residue_types(ligand_params)
-
-  pose.conformation().reset_residue_type_set_for_conf(res_set)
-  pose_from_file(pose, str(pdb_filename))
-  for rnum1 in range(1, pose.total_residue() + 1):
-      r1 = pose.residue(rnum1)
-      for a1 in range(1, len(r1.atoms()) + 1):
-          seq1 = pose.pdb_info().pose2pdb(rnum1).strip().replace(' ','-')
-          at1 = r1.atom_name(a1).strip()
-          key1 = seq1 + '-' + at1
-          charges.append(r1.atomic_charge(a1))
-          radii.append(r1.atom_type(a1).lj_radius())
-          keys.append(key1)
+    pdb_filename : pathlib.Path
+        Path for the complex pdb file
+    ligand_params : pathlib.Path
+        Path for the ligand params file
+    """
+    keys = []
+    charges = []
+    radii = []
+  
+    if type(ligand_params) is str:
+        ligand_params = [ligand_params]
+    ligand_params = Vector1([str(ligand_params)])
+  
+    pose = Pose()
+    res_set = pose.conformation().modifiable_residue_type_set_for_conf()
+    res_set.read_files_for_base_residue_types(ligand_params)
+  
+    pose.conformation().reset_residue_type_set_for_conf(res_set)
+    pose_from_file(pose, str(pdb_filename))
+    for rnum1 in range(1, pose.total_residue() + 1):
+        r1 = pose.residue(rnum1)
+        for a1 in range(1, len(r1.atoms()) + 1):
+            seq1 = pose.pdb_info().pose2pdb(rnum1).strip().replace(' ','-')
+            at1 = r1.atom_name(a1).strip()
+            key1 = seq1 + '-' + at1
+            charges.append(r1.atomic_charge(a1))
+            radii.append(r1.atom_type(a1).lj_radius())
+            keys.append(key1)
 
   return keys, charges, radii
 
@@ -94,10 +110,20 @@ class ComputeRosettaEnergy(metaclass=Step,requirements=[MinimizeRosetta]):
 
     @classmethod
     def files(cls, pdb_object):
+        """List of files being created
+
+        pdb_object : PDBObject
+            PDB structure being handled
+        """
         return [pdb_object.minimized.complex.attr]
 
     @classmethod
     def _run(cls, pdb_object):
+        """Inner function for the preprocessing step.
+
+        pdb_object : PDBObject
+            PDB structure being handled
+        """
         pdb_file = pdb_object.minimized.complex.pdb.path
         folder = pdb_file.parent
         pdb_code = folder.stem

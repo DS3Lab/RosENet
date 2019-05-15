@@ -1,3 +1,7 @@
+"""Constants file. Here one only needs to change the location of the different 
+tools used by the project.
+"""
+
 import os
 from types import SimpleNamespace
 from pathlib import Path

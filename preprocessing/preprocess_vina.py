@@ -1,3 +1,8 @@
+"""
+Module extracted from prepare_receptor4.py and prepare_ligand4.py from AutoDockTools scripts.
+http://autodock.scripps.edu/faqs-help/how-to/how-to-prepare-a-receptor-file-for-autodock4
+http://autodock.scripps.edu/faqs-help/how-to/how-to-prepare-a-ligand-file-for-autodock4
+"""
 import os 
 from MolKit import Read
 import MolKit.molecule
