@@ -1,0 +1,45 @@
+<ROSETTASCRIPTS>
+
+<SCOREFXNS>
+<ligand_soft_rep weights=ligand_soft_rep>
+</ligand_soft_rep>
+<hard_rep weights=ligand>
+</hard_rep>
+</SCOREFXNS>
+
+<LIGAND_AREAS>
+<inhibitor_dock_sc chain=X cutoff=6.0 add_nbr_radius=true all_atom_mode=false/>
+<inhibitor_final_sc chain=X cutoff=6.0 add_nbr_radius=true all_atom_mode=false/>
+<inhibitor_final_bb chain=X cutoff=7.0 add_nbr_radius=false all_atom_mode=true Calpha_restraints=0.3/>
+</LIGAND_AREAS>
+
+<INTERFACE_BUILDERS>
+<side_chain_for_docking ligand_areas=inhibitor_dock_sc/>
+<side_chain_for_final ligand_areas=inhibitor_final_sc/>
+<backbone ligand_areas=inhibitor_final_bb extension_window=3/>
+</INTERFACE_BUILDERS>
+
+<MOVEMAP_BUILDERS>
+<docking sc_interface=side_chain_for_docking minimize_water=false/>
+<final sc_interface=side_chain_for_final bb_interface=backbone minimize_water=false/>
+</MOVEMAP_BUILDERS>
+
+<SCORINGGRIDS ligand_chain="X" width="15">
+<classic grid_type="ClassicGrid" weight="1.0"/>
+</SCORINGGRIDS>
+
+<MOVERS>
+<Transform name="transform" chain="X" box_size="7.0" move_distance="0.2" angle="20" cycles="500" repeats="1" temperature="5"/>
+<HighResDocker name=high_res_docker cycles=6 repack_every_Nth=3 scorefxn=ligand_soft_rep movemap_builder=docking/>
+<FinalMinimizer name=final scorefxn=hard_rep movemap_builder=final/>
+<InterfaceScoreCalculator name=add_scores chains=X scorefxn=hard_rep native="crystal_complex.pdb"/> 
+</MOVERS>
+
+<PROTOCOLS>
+<Add mover_name=transform/>
+<Add mover_name=high_res_docker/>
+<Add mover_name=final/>
+<Add mover_name=add_scores/>
+</PROTOCOLS>
+
+</ROSETTASCRIPTS>

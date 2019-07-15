@@ -43,20 +43,20 @@ class Step(type):
         """
         if cls.computed(pdb_object) and not force:
             if not surrogate:
-                utils.message_callbacks(callbacks, (cls.name, pdb_object, "already_done"))
+                utils.message_callbacks(callbacks, (cls.name, pdb_object.id, "already_done"))
             return True
         elif not cls.ready(pdb_object):
             if not surrogate:
-                utils.message_callbacks(callbacks, (cls.name, pdb_object, "not_ready"))
+                utils.message_callbacks(callbacks, (cls.name, pdb_object.id, "not_ready"))
             return False
-        utils.message_callbacks(callbacks, (cls.name, pdb_object, "start"))
+        utils.message_callbacks(callbacks, (cls.name, pdb_object.id, "start"))
         try:
             cls._run(pdb_object)
         except Exception as e:
-            utils.message_callbacks(callbacks, (cls.name, pdb_object, "error", e))
+            utils.message_callbacks(callbacks, (cls.name, pdb_object.id, "error", e))
             return False
         pdb_object.complete(cls.name)
-        utils.message_callbacks(callbacks, (cls.name, pdb_object, "end"))
+        utils.message_callbacks(callbacks, (cls.name, pdb_object.id, "end"))
         return True
 
     def computed(cls, pdb_object):

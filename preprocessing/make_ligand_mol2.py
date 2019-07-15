@@ -1,8 +1,9 @@
 from DrugDiscovery.preprocessing.step import Step
 import DrugDiscovery.rosetta.rosetta as rosetta
 from DrugDiscovery.preprocessing.make_ligand_mol2_renamed import MakeLigandMOL2Renamed
+from DrugDiscovery.preprocessing.minimize_rosetta import MinimizeRosetta
 
-class MakeLigandMOL2(metaclass=Step,requirements=[MakeLigandMOL2Renamed]):
+class MakeLigandMOL2(metaclass=Step,requirements=[MakeLigandMOL2Renamed, MinimizeRosetta]):
     @classmethod
     def files(cls, pdb_object):
         """List of files being created

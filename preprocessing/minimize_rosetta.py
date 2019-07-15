@@ -58,6 +58,7 @@ def hide_non_minimal_complexes(pdb_object):
     storage.make_directory(hidden_folder)
     for number in list(scores.keys())[1:]:
         complex_path = pdb_object.minimized.complex.pdb[number].path
+        print("Hiding ", complex_path)
         storage.move(complex_path, hidden_folder, no_fail=True)
 
 
@@ -85,6 +86,8 @@ class MinimizeRosetta(metaclass=Step, requirements=[MakeComplexPDB]):
         """
         generate_minimization_flags_file(pdb_object)
         generate_constraint_file(pdb_object)
+        if pdb_object.minimized.scores.path.exists():
+            hide_non_minimal_complexes(pdb_object)
         rosetta.minimize(working_directory = pdb_object.path)
         hide_non_minimal_complexes(pdb_object)
 

@@ -8,6 +8,7 @@
 	-ex2
 -mute core.util.prof ## dont show timing info
 -mute core.io.database
+#-restore_pre_talaris_2013_behavior
 #-mute all
 #-unmute protocols.jd2.JobDistributor
 -constraints:cst_fa_file ./constraints
@@ -18,5 +19,5 @@
 -in:ignore_waters false
 -ignore_zero_occupancy false
 -keep_input_protonation_state true
--nstruct 10
+-nstruct 100
 -overwrite

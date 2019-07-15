@@ -104,7 +104,7 @@ def get_radii_and_charges(pdb_filename, ligand_params):
             radii.append(r1.atom_type(a1).lj_radius())
             keys.append(key1)
 
-  return keys, charges, radii
+    return keys, charges, radii
 
 class ComputeRosettaEnergy(metaclass=Step,requirements=[MinimizeRosetta]):
 
