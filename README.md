@@ -1,4 +1,6 @@
-<img src="logo.png" align="left" width="200">
+<img src="logo.png" align="left" width="300">
+
+# RosENet
 
 This is the repository for the RosENet project.
 
