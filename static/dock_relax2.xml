@@ -21,7 +21,7 @@
 				<MoveMapBuilder name="docking" sc_interface="side_chain_for_docking" minimize_water="false"/>
 				<MoveMapBuilder name="final" sc_interface="side_chain_for_final" bb_interface="backbone" minimize_water="false"/>
 		</MOVEMAP_BUILDERS>
-		<SCORINGGRIDS ligand_chain="X" width="30">
+		<SCORINGGRIDS ligand_chain="X" width="15">
 				<ClassicGrid grid_name="classic" weight="1.0"/>
 		</SCORINGGRIDS>
 
@@ -29,7 +29,7 @@
          <DetectProteinLigandInterface name="ligandInterface" cut1="0.0" cut2="0.0" cut3="16.0" cut4="20.0" design="0" catres_interface="0" catres_only_interface="0" arg_sweep_interface="0"/>
      </TASKOPERATIONS>
       <MOVERS>
-				<Transform name="transform" chain="X" box_size="7.0" move_distance="0.2" angle="20" cycles="500" repeats="1" temperature="5"/>
+				<Transform name="transform" chain="X" box_size="24.0" move_distance="0.2" angle="20" cycles="500" repeats="1" temperature="5"/>
 				<HighResDocker name="high_res_docker" cycles="6" repack_every_Nth="3" scorefxn="ligand_soft_rep" movemap_builder="docking"/>
 				<FinalMinimizer name="final" scorefxn="hard_rep" movemap_builder="final"/>
            <ConstraintSetMover name="constraint" add_constraints="true" cst_file="./constraints"/>
@@ -39,5 +39,7 @@
           <Add mover_name="transform"/>
           <Add mover_name="high_res_docker"/>
           <Add mover_name="final"/>
+          <Add mover_name="constraint"/>
+          <Add mover_name="relax"/>
        </PROTOCOLS>
 </ROSETTASCRIPTS>

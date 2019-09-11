@@ -9,7 +9,7 @@ from pathlib import Path
 source_path = os.path.dirname(os.path.abspath(__file__))
 flags_filename = "flags_relax.txt"
 flags_relax_path = os.path.join(source_path, "static", flags_filename)
-relax_filename = "relax.xml"
+relax_filename = "dock_relax.xml"
 relax_path = os.path.join(source_path, "static", relax_filename)
 metal_selector = "chain Z"
 ligand_resname = "WER"
@@ -27,8 +27,9 @@ nonstd2stdresidues = {'HOH':'WAT',
                       'HIY':'HIS',
                       'ALB':'ALA',
                       'ASM':'ASN',
-                      'DIC':'ILE',
+                      'DIC':'ASP',
                       'GLV':'GLU',
+					  'GLO':'GLN',
                       'HIZ':'HIS',
                       'LEV':'LEU',
                       'SEM':'SER',
@@ -38,6 +39,9 @@ nonstd2stdresidues = {'HOH':'WAT',
                       'LLP':'LYS',
                       'ARN':'ARG',
                       'ASH':'ASP',
+                      'DID':'ASP',
+					  'ASZ':'ASP',
+					  'CYT':'CYS',
                       'GLH':'GLU',
                       'LYN':'LYS',
                       'AR0':'ARG',
