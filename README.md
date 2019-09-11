@@ -1,8 +1,18 @@
-# DrugDiscovery
+![RosENet logo](logo.png)
 
-This is the repository for the Drug Discovery project.
-Master thesis by Hussein Hassan Harrirou.
-Supervised by Dr. Thomas Lemmin.
+# RosENet
+
+This is the repository for the RosENet project.
+
+RosENet: A 3D Convolutional Neural Network for predicting absolute binding affinity using molecular mechanics energies
+
+Hussein Hassan-Harrirou¹, Ce Zhang¹, Thomas Lemmin <sup>1,2,*</sup>
+
+¹DS3Lab, System Group, Department of Computer Sciences, ETH Zurich, CH-8092 Zurich, Switzerland
+
+²Institute of Medical Virology, University of Zurich (UZH), CH-8057 Zurich, Switzerland
+
+\*corresponding author: thomas.lemmin@inf.ethz.ch
 
 ## Prerequisites
 
