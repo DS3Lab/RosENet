@@ -142,14 +142,19 @@ class PointwiseVoxelizer(Voxelizer):
         ----------
         obj : SimpleNamespace
         """
-        obj.keys = get_keys(obj.structure)
-        obj.atoms_in_scope = [x in self.energy_keys for x in obj.keys]
-        obj.coordinates = np.compress(obj.atoms_in_scope, obj.structure.getCoords(), axis=0).reshape((-1, 3))
-        obj.keys = list(compress(obj.keys, obj.atoms_in_scope))
-        obj.radii = np.array(itemgetter(*obj.keys)
-                             (self.radii)).reshape((-1, 1))
-        obj.charges = np.array(itemgetter(*obj.keys)
-                               (self.charges)).reshape((-1, 1))
+        try:
+            obj.keys = get_keys(obj.structure)
+            obj.atoms_in_scope = [x in self.energy_keys for x in obj.keys]
+            obj.coordinates = np.compress(obj.atoms_in_scope, obj.structure.getCoords(), axis=0).reshape((-1, 3))
+            obj.keys = list(compress(obj.keys, obj.atoms_in_scope))
+            obj.radii = np.array(itemgetter(*obj.keys)
+                                 (self.radii)).reshape((-1, 1))
+            obj.charges = np.array(itemgetter(*obj.keys)
+                                   (self.charges)).reshape((-1, 1))
+        except Exception as e:
+            print(self.path)
+            print("#"*81)
+            raise e
 
     def _prepare_values(self):
         """Voxelizer specific value loading."""
@@ -194,12 +199,11 @@ class ElectronegativityVoxelizer(PointwiseVoxelizer):
         elements = set(self.complex.getElements())
         el_dict = {name: element(
             name.capitalize()).en_pauling for name in elements}
-        self.protein.values = np.array(list(compress((el_dict[name.capitalize(
-        )] for name in self.protein.structure.getElements()), self.protein.atoms_in_scope)))\
+        self.protein.values = np.array(list(compress((el_dict[name] for name in self.protein.structure.getElements()), self.protein.atoms_in_scope)))\
                 .reshape((-1, 1))
-        self.ligand.values = np.array(list(compress((el_dict[name.capitalize(
-        )] for name in self.ligand.structure.getElements()), self.ligand.atoms_in_scope)))\
-                .reshape((-1, 1))
+        self.ligand.values = np.array(list(compress([el_dict[name] for name in self.ligand.structure.getElements()], self.ligand.atoms_in_scope)))\
+				.reshape((-1, 1))
+
 
     def _normalize(self):
         """Normalizes the electronegativities by dividing by the highest values
@@ -269,6 +273,7 @@ class HTMDVoxelizer(Voxelizer):
         center = np.mean(ligand.get('coords'), axis=0)
         ligand.moveBy(-center)
         protein.moveBy(-center)
+        center = np.mean(ligand.get('coords'), axis=0)
         self.protein.structure = protein
         self.ligand.structure = ligand
         self.points = grid_around(center, self.size, spacing=24/(self.size-1)).reshape((-1,3))
@@ -300,6 +305,8 @@ def VoxelizeRosetta(pdb_object, method, size):
     complex_path = pdb_object.minimized.complex.pdb.path
     data_object = pdb_object.minimized.complex.attr
     output_path = pdb_object.image.rosetta.path
+    if output_path.exists():
+        return True
     method_type, method_fn = method
     voxelizer = RosettaVoxelizer(complex_path, data_object, size, method_type, method_fn)
     voxelizer.voxelize()
@@ -321,6 +328,8 @@ def VoxelizeElectronegativity(pdb_object, method, size):
     complex_path = pdb_object.minimized.complex.pdb.path
     data_object = pdb_object.minimized.complex.attr
     output_path = pdb_object.image.electronegativity.path
+    if output_path.exists():
+        return True
     method_type, method_fn = method
     voxelizer = ElectronegativityVoxelizer(complex_path, data_object, size, method_type, method_fn)
     voxelizer.voxelize()
@@ -339,6 +348,8 @@ def VoxelizeHTMD(pdb_object, size):
     protein_path = pdb_object.minimized.protein.pdbqt.path
     ligand_path = pdb_object.minimized.ligand.pdbqt.path
     output_path = pdb_object.image.htmd.path
+    if output_path.exists():
+        return True
     voxelizer = HTMDVoxelizer(protein_path, ligand_path, size)
     voxelizer.voxelize()
     pdb_object.image.htmd.write(voxelizer.image)

@@ -57,6 +57,7 @@ class _PDB:
             storage.write_json(self.metadata_path, { "completed_steps" : []})
         self.metadata = storage.read_json(self.metadata_path)
         _create(_PDB._property_tree, path, self.__dict__)
+        from DrugDiscovery.objects.file import File
         self.image.combined = File.create(f"{self.id}.img", path.parent / settings.options)
 
     @property

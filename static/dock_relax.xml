@@ -1,0 +1,45 @@
+<ROSETTASCRIPTS>
+		<SCOREFXNS>
+				<ScoreFunction name="ligand_soft_rep" weights="ligand_soft_rep">
+				</ScoreFunction>
+				<ScoreFunction name="hard_rep" weights="ligand">
+				</ScoreFunction>
+		</SCOREFXNS>
+
+		<LIGAND_AREAS>
+				<LigandArea name="inhibitor_dock_sc" chain="X" cutoff="6.0" add_nbr_radius="true" all_atom_mode="false"/><LigandArea name="inhibitor_final_sc" chain="X" cutoff="6.0" add_nbr_radius="true" all_atom_mode="false"/>
+				<LigandArea name="inhibitor_final_bb" chain="X" cutoff="7.0" add_nbr_radius="false" all_atom_mode="true" Calpha_restraints="0.3"/>
+		</LIGAND_AREAS>
+
+		<INTERFACE_BUILDERS>
+				<InterfaceBuilder name="side_chain_for_docking" ligand_areas="inhibitor_dock_sc"/>
+				<InterfaceBuilder name="side_chain_for_final" ligand_areas="inhibitor_final_sc"/>
+				<InterfaceBuilder name="backbone" ligand_areas="inhibitor_final_bb" extension_window="3"/>
+		</INTERFACE_BUILDERS>
+
+		<MOVEMAP_BUILDERS>
+				<MoveMapBuilder name="docking" sc_interface="side_chain_for_docking" minimize_water="false"/>
+				<MoveMapBuilder name="final" sc_interface="side_chain_for_final" bb_interface="backbone" minimize_water="false"/>
+		</MOVEMAP_BUILDERS>
+		<SCORINGGRIDS ligand_chain="X" width="15">
+				<ClassicGrid grid_name="classic" weight="1.0"/>
+		</SCORINGGRIDS>
+
+     <TASKOPERATIONS>
+         <DetectProteinLigandInterface name="ligandInterface" cut1="0.0" cut2="0.0" cut3="16.0" cut4="20.0" design="0" catres_interface="0" catres_only_interface="0" arg_sweep_interface="0"/>
+     </TASKOPERATIONS>
+      <MOVERS>
+				<Transform name="transform" chain="X" box_size="7.0" move_distance="0.2" angle="20" cycles="500" repeats="1" temperature="5"/>
+				<HighResDocker name="high_res_docker" cycles="6" repack_every_Nth="3" scorefxn="ligand_soft_rep" movemap_builder="docking"/>
+				<FinalMinimizer name="final" scorefxn="hard_rep" movemap_builder="final"/>
+           <ConstraintSetMover name="constraint" add_constraints="true" cst_file="./constraints"/>
+            <EnzRepackMinimize name="relax" scorefxn_repack="REF2015" scorefxn_minimize="REF2015" cst_opt="0" design="0" repack_only="1" fix_catalytic="0" minimize_rb="1"  minimize_bb="1" minimize_sc="1" minimize_lig="1" min_in_stages="0" backrub="0" cycles="1" task_operations="ligandInterface"/>
+     </MOVERS>
+      <PROTOCOLS>
+          <Add mover_name="transform"/>
+          <Add mover_name="high_res_docker"/>
+          <Add mover_name="final"/>
+          <Add mover_name="constraint"/>
+          <Add mover_name="relax"/>
+       </PROTOCOLS>
+</ROSETTASCRIPTS>

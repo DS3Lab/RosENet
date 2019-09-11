@@ -145,9 +145,9 @@ def load_fn(dataset_object, channels, rotate, training):
     training : bool
         True if training
     """
-	name = dataset_object.name
-	shape = [settings.size]*3 + [30]
-	training = (training == tf.estimator.ModeKeys.TRAIN)
-	dataset_files = dataset_object.tfrecords / '*.tfrecords'
-	return make_input_fn(dataset_files, shape, training, rotate, channels)
+    name = dataset_object.name
+    shape = [settings.size]*3 + [30]
+    training = (training == tf.estimator.ModeKeys.TRAIN)
+    dataset_files = dataset_object.tfrecords / '*.tfrecords'
+    return make_input_fn(dataset_files, shape, training, rotate, channels)
 

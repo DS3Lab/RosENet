@@ -13,14 +13,12 @@ def combine_maps(pdb_object):
     features = [pdb_object.image.htmd.read(),
                 pdb_object.image.electronegativity.read(),
                 pdb_object.image.rosetta.read()]
-    for image in features:
-        print(image.shape)
     grid = np.concatenate(features, axis=-1)
     storage.make_directory(pdb_object.image.combined.path.parent)
     pdb_object.image.combined.write(grid)
 
 
-def serialize_file(file, target):
+def serialize_file(file, target, type):
     """Serialize image file to Tensorflow serialized format
 
     Parameters
@@ -31,14 +29,14 @@ def serialize_file(file, target):
         Ground truth binding affinity for the image.
     """
     datapoint = storage.read_image(file)
-    print(datapoint.shape)
     features = datapoint.flatten()
-    print(features.shape)
     label = bytes(file.stem,"utf-8")
+    type = 0 if type == "Kd" else 1
     example = tf.train.Example(features=tf.train.Features(feature={
             'id' : tf.train.Feature(bytes_list=tf.train.BytesList(value=[label])),
             'X' : tf.train.Feature(float_list=tf.train.FloatList(value=features)),
-            'y' : tf.train.Feature(float_list=tf.train.FloatList(value=np.array([target])))
+            'y' : tf.train.Feature(float_list=tf.train.FloatList(value=np.array([target]))),
+            'type' : tf.train.Feature(int64_list=tf.train.Int64List(value=[type]))
             }))
     return example.SerializeToString()
 
@@ -54,7 +52,7 @@ def write_tfrecords(files, dataset_object, number, labels):
     labels : dict
         Dictionary relating image names to their binding affinities.
     """
-    output = [serialize_file(file, float(labels[file.stem])) for file in files]
+    output = [serialize_file(file, float(labels[file.stem][0]), labels[file.stem][1]) for file in files]
     dataset_object.tfrecord(number).write(output)
 
 def chunk_by_size(files, recommended_tf_size=float(100*(2**20))):
@@ -81,7 +79,8 @@ def generate_tfrecords(dataset_object):
     storage.clear_directory(dataset_object.tfrecords, no_fail=True)
     storage.make_directory(dataset_object.tfrecords, no_fail=True)
     lines = dataset_object.labels.read().splitlines()
-    pdb_labels = dict([tuple(line.split(" ")) for line in lines])
+    lines = [line.split(" ") for line in lines]
+    pdb_labels = dict([(line[0],line[1:]) for line in lines])
     for i, chunk in enumerate(chunks):
         write_tfrecords(chunk, dataset_object, i, pdb_labels)
 

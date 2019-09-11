@@ -9,6 +9,7 @@ from DrugDiscovery.objects.dataset import DatasetObject
 from DrugDiscovery.preprocessing import preprocess
 from DrugDiscovery.voxelization import voxelize
 from DrugDiscovery.postprocessing import postprocess
+from DrugDiscovery.preprocessing.minimize_rosetta import hide_non_minimal_complexes
 
 def parse_arguments():
     """Parse arguments and perform the selected action."""
@@ -22,6 +23,11 @@ def parse_arguments():
     gpu = optional.gpu
     if njobs is None:
         njobs = multiprocessing.cpu_count()-1
+    else:
+        njobs = int(njobs)
+    print("#####",njobs)
+    print(optional.extra)
+    arguments = optional.extra
     os.environ["CUDA_VISIBLE_DEVICES"]=""
     if gpu is not None:
         os.environ["CUDA_VISIBLE_DEVICES"]=gpu
@@ -38,7 +44,7 @@ predict			Predict binding affinity
 ''')
     parser.add_argument("action", help='Command to run')
     parser.add_argument("dataset", help='Dataset path')
-    args = parser.parse_args(arguments[1:3])
+    args = parser.parse_args(arguments[0:2])
     action  = args.action
     dataset = DatasetObject(Path(args.dataset))
     if action in ["train", "evaluate", "predict"]:
@@ -58,16 +64,19 @@ correct instance of the trained model.
         parser.add_argument("network")
         parser.add_argument("channels")
         parser.add_argument("seed", nargs="?", default=None)
-        args = parser.parse_args(arguments[3:7])
+        args = parser.parse_args(arguments[2:6])
         other_dataset= DatasetObject(Path(args.validation_dataset))
         network = ModelObject(Path(args.network))
-        channels = args.channels
+        hannels = args.channels
         seed = int(args.seed)
     if action in ["preprocess", "voxelize"]:
-        pdbs = dataset_object.list()
-        pdbs = map(dataset_object.__getitem__, pdbs)
+        import random
+        pdbs = dataset.list()
+        random.shuffle(pdbs)
+        pdbs = map(dataset.__getitem__, pdbs)
         p = multiprocessing.Pool(gpu)
     if action == "preprocess":
+        #p.map(hide_non_minimal_complexes, pdbs)
         p.map(preprocess, pdbs)
     elif action == "voxelize":
         p.map(voxelize, pdbs)

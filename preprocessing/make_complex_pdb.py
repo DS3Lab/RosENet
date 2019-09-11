@@ -88,7 +88,7 @@ def protein_optimization(complex_path):
     complex = Molecule(str(complex_path))
     prot = complex.copy(); prot.filter("protein")
     lig = complex.copy(); lig.filter(constants.ligand_selector)
-    prot = proteinPrepare(prot, pH=7.0)
+    #prot = proteinPrepare(prot, pH=7.0)
     mol = Molecule(name="complex")
     mol.append(prot)
     mol.append(lig)

@@ -8,7 +8,7 @@ class _Dataset:
     _instance_dict = {}
     def __init__(self, path):
         self.path = path
-        self.metadata = storage.read_json(self.path / "metadata.json")
+        #self.metadata = storage.read_json(self.path / "metadata.json")
 
     def __getitem__(self, key):
         return PDBObject(self.path / key)
