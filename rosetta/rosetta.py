@@ -9,6 +9,9 @@ import pandas as pd
 
 
 def molfile_to_params(input_path, output_path, working_directory):
+    new_env = os.environ.copy()
+    # This should solve the relative import problem in Rosetta's script
+    new_env["PYTHONPATH"] = f"{constants.rosetta.root}/main/source/scripts/python/public:{new_env.get('PYTHONPATH','')}"
     subprocess.run(["python2",
         constants.rosetta.molfile_to_params,
         "-n", constants.ligand_resname,
@@ -17,6 +20,7 @@ def molfile_to_params(input_path, output_path, working_directory):
         "--keep-names",
         "--clobber",
         input_path],
+        env=new_env,
         cwd=str(working_directory))
 
 def minimize(working_directory):
