@@ -1,1 +1,4 @@
 **/*.pyc
+htmd/
+pyrosetta/
+__pycache__/

@@ -30,7 +30,7 @@ Additionally, the Rosetta Commons framework is needed. After installing it (not 
 This repository is built as a Python module. To execute it, one should go above the root folder and run the following command:
 
 ```
-python3 -m DrugDiscovery -- arguments
+python3 -m RosENet -- arguments
 ```
 
 Currently, six actions are implemented:
@@ -100,25 +100,25 @@ To run the actions mentioned above with the example dataset, we need to run the 
 
 1. preprocess
 ```
-python3 -m DrugDiscovery -- preprocess test_dataset
+python3 -m RosENet -- preprocess test_dataset
 ```
 2. voxelize
 ```
-python3 -m DrugDiscovery -- voxelize test_dataset
+python3 -m RosENet -- voxelize test_dataset
 ```
 3. postprocess
 ```
-python3 -m DrugDiscovery -- postprocess test_dataset
+python3 -m RosENet -- postprocess test_dataset
 ```
 4. train
 ```
-python3 -m DrugDiscovery -- train train_dataset validation_dataset model.py "htmd_rosetta_electronegativity" 1000
+python3 -m RosENet -- train train_dataset validation_dataset model.py "htmd_rosetta_electronegativity" 1000
 ```
 5. evaluate
 ```
-python3 -m DrugDiscovery -- evaluate train_dataset evaluation_dataset model.py "htmd_rosetta_electronegativity" 1000
+python3 -m RosENet -- evaluate train_dataset evaluation_dataset model.py "htmd_rosetta_electronegativity" 1000
 ```
 6. predict
 ```
-python3 -m DrugDiscovery -- predict train_dataset prediction_dataset model.py "htmd_rosetta_electronegativity" 1000
+python3 -m RosENet -- predict train_dataset prediction_dataset model.py "htmd_rosetta_electronegativity" 1000
 ```
