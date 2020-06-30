@@ -16,14 +16,9 @@ Hussein Hassan-Harrirou¹, Ce Zhang¹, Thomas Lemmin <sup>1,2,*</sup>
 
 ## Prerequisites
 
-The following Python libraries are needed:
+A script `install.sh` is included, which creates a Conda environment and install the necessary requirements.
 
-- prody
-- htmd
-- pyrosetta
-- tensorflow
-
-Additionally, the Rosetta Commons framework is needed. After installing it (not shown here), the path to the root folder of the installation must be set in file constants.py
+Pyrosetta must be installed manually due to the required license. It can be copied next to the RosENet folder or by adding it to the `PYTHONPATH`.
 
 ## How to run
 
