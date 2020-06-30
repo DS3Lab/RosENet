@@ -52,7 +52,7 @@ def write_tfrecords(files, dataset_object, number, labels):
     labels : dict
         Dictionary relating image names to their binding affinities.
     """
-    output = [serialize_file(file, float(labels[file.stem][0]), labels[file.stem][1]) for file in files]
+    output = [serialize_file(file, float(labels[file.stem][0]), "Kd") for file in files]
     dataset_object.tfrecord(number).write(output)
 
 def chunk_by_size(files, recommended_tf_size=float(100*(2**20))):
