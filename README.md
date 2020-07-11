@@ -47,6 +47,8 @@ Voxelization allows to create the 3D images for HTMD, Rosetta and electronegativ
 Postprocessing will transform the 3D images into a TFRecords format to be used as input for the neural networks.
 Training, evaluation and prediction have the usual meanings.
 
+Substeps in `preprocess` are cached. If some steps fail for some reason (usually faulty installations), the correct procedure after fixing the original problem is to clean the cached dataset. To do this, run `bash clear_dataset.sh <dataset>`, where `<dataset>` is the path to the dataset (i.e. `test_dataset`).
+
 ## Folder structure
 
 To ease the setup, there are some requirements to the structure of the inputs.
