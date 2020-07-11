@@ -108,7 +108,7 @@ def make_input_fn(input_path, shape, training, rot, merge):
         dataset = files.apply(
                     tf.data.experimental.parallel_interleave(tf.data.TFRecordDataset,
                                                              settings.parallel_calls))
-        dataset = dataset.map(parse_fn(training,shape), settings.parallel_calls)
+        dataset = dataset.map(parse_fn(shape), settings.parallel_calls)
         take = list(channel_order)
         filts = []
         if "rosetta" in merge:

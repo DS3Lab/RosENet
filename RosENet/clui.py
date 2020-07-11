@@ -67,7 +67,7 @@ correct instance of the trained model.
         args = parser.parse_args(arguments[2:6])
         other_dataset= DatasetObject(Path(args.validation_dataset))
         network = ModelObject(Path(args.network))
-        hannels = args.channels
+        channels = args.channels
         seed = int(args.seed)
     if action in ["preprocess", "voxelize"]:
         import random

@@ -25,7 +25,6 @@ def train(dataset_train, dataset_evaluate, model_object, seed=None, channels="")
     tf.set_random_seed(seed)
     model_train_object = model_object.train_object(dataset_train,channels,seed)
     model_valid_object = model_object.evaluate_object(dataset_evaluate,channels,seed)
-    model_train_object.presave(seed)
     with tf.Session() as sess:
         sess.run(tf.global_variables_initializer())
         min_validation = float('inf')
@@ -44,6 +43,7 @@ def train(dataset_train, dataset_evaluate, model_object, seed=None, channels="")
                 epoch_min_validation = num_epochs
                 model_train_object.save(sess)
             print(f"Best validation: {min_validation} Epoch: {epoch_min_validation}")
+        model_train_object.save(sess)
         save_results(model_train_object, channels, min_validation, epoch_min_validation, seed)
 
 def evaluate(dataset_train, dataset_evaluate, model_object, seed, channels=""):
