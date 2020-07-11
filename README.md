@@ -78,46 +78,91 @@ After training a neural network, the module will save the trained network in the
 
 ## Selecting feature subsets
 
-To select feature subsets, we can use the channel selectors. Right now, only basic selectors are implemented. These selectors are used during the training, evaluation or prediction actions.
-The current accepted selectors are "htmd", "rosetta", and "electronegativity". To select a combination, we can concatenate them with an underscore.
-For example, "htmd_electronegativity" would combine both HTMD and electronegativity features.
-To see where to use the channel selector, see the examples below.
+To select feature subsets, we can use the channel selectors. These are implemented by matching them as a substring of the feature names. Multiple channel selectors can be combined with underscored.
+
+The feature names are: 
+
+* `htmd_hydrophobic`
+* `htmd_aromatic`
+* `htmd_hbond_acceptor`
+* `htmd_hbond_donor`
+* `htmd_positive_ionizable`
+* `htmd_negative_ionizable`
+* `htmd_metal`
+* `htmd_occupancies`
+* `elec_p`
+* `elec_l`
+* `rosetta_atr_p`
+* `rosetta_rep_p`
+* `rosetta_sol_p_pos`
+* `rosetta_elec_p_pos`
+* `rosetta_sol_p_neg`
+* `rosetta_elec_p_neg`
+* `rosetta_atr_l`
+* `rosetta_atr_p`
+* `rosetta_sol_l_pos`
+* `rosetta_elec_l_pos`
+* `rosetta_sol_l_neg`
+* `rosetta_elec_l_neg`
+
+All `htmd` feature names represent both the protein and ligand features, so they are effectively two channels.
+
+For example, using `htmd_rosetta` will include all the HTMD features, and all the Rosetta features.
+
+The combination used in the paper release is `aromatic_acceptor_ion_rosetta`, adding to 20 feature maps.
+
 
 ## Setting the randomness
 
 The neural network actions use a seed parameter. For training, this seed is optional and can be randomly chosen by the module.
-This seed will affect not only the network, but where the trained neural network is saved. Thus, it is necessary to use the same seed to load the previously produced network.
+
+The seed is used to identify different trainings of the same model/data. When evaluating and predicting, the seed must be specified. The seed can be found in the name of the trained model folder, located under the training dataset folder with name format `_<model_name>_<features_string>_<seed>`.
 
 ## Settings
 
-There are a few parameters that may be modified to change the behavior of the module. The file settings.py stores these options.
+There are a few parameters that may be modified to change the behavior of the module. The file `settings.py` stores these options.
 There we can change the voxelization methods and the size of the voxel image. We can also change the parameters for TensorFlow's input pipeline.
 
-## Examples
+## Running instructions
 
 To run the actions mentioned above with the example dataset, we need to run the following commands:
 
+### Data preparation
+
+For the example dataset, substitute `<dataset>` with `test_dataset`
+
 1. preprocess
 ```
-python3 -m RosENet -- preprocess test_dataset
+python3 -m RosENet -- preprocess <dataset>
 ```
 2. voxelize
 ```
-python3 -m RosENet -- voxelize test_dataset
+python3 -m RosENet -- voxelize <dataset>
 ```
 3. postprocess
 ```
-python3 -m RosENet -- postprocess test_dataset
+python3 -m RosENet -- postprocess <dataset>
 ```
+
+### Network training/evaluation
+
+Substitute `<*_dataset>` with the paths to the respective datasets. 
+
+Substitute `<model>` for the path of a network model code. Some examples are located under `RosENet/models` (i.e. `RosENet/models/resnet.py`)
+
+Substitute `<feature_string>` for an underscore-separated string of channel selectors.
+
+Substitute `<seed>` for a non-negative integer to be used as seed.
+
 4. train
 ```
-python3 -m RosENet -- train train_dataset validation_dataset model.py "htmd_rosetta_electronegativity" 1000
+python3 -m RosENet -- train <train_dataset> <validation_dataset> <model> <features_string> [<seed>]
 ```
 5. evaluate
 ```
-python3 -m RosENet -- evaluate train_dataset evaluation_dataset model.py "htmd_rosetta_electronegativity" 1000
+python3 -m RosENet -- evaluate <train_dataset> <evaluation_dataset> <model> <features_string> <seed>
 ```
 6. predict
 ```
-python3 -m RosENet -- predict train_dataset prediction_dataset model.py "htmd_rosetta_electronegativity" 1000
+python3 -m RosENet -- predict <train_dataset> <prediction_dataset> <model> <features_string> <seed>
 ```
