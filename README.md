@@ -18,7 +18,11 @@ Hussein Hassan-Harrirou¹, Ce Zhang¹, Thomas Lemmin <sup>1,2,*</sup>
 
 A script `install.sh` is included, which creates a Conda environment and install the necessary requirements.
 
-Pyrosetta must be installed manually due to the required license. It can be copied next to the RosENet folder or by adding it to the `PYTHONPATH`.
+Rosetta and Pyrosetta must be installed manually due to the required license.
+
+Pyrosetta can be copied next to the RosENet folder or by adding it to the `PYTHONPATH`.
+
+You must set the path to Rosetta's main folder in the attribute `rosetta.root` in file `RosENet/constants.py` [LINK](RosENet/constants.py#L65)
 
 ## How to run
 
