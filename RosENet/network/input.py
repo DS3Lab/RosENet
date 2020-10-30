@@ -110,9 +110,7 @@ def make_input_fn(input_path, shape, training, rot, merge):
                                                              settings.parallel_calls))
         dataset = dataset.map(parse_fn(shape), settings.parallel_calls)
         take = list(channel_order)
-        filts = []
-        for m in merge:
-            filts.append(lambda x: m in x)
+        filts = list(map(lambda m: lambda x: m in x, merge))
         take = [x for x in take if any([f(x) for f in filts])]
         channel_order, take_fn = take_channels(take, channel_order)
         dataset = dataset.map(take_fn, settings.parallel_calls)
