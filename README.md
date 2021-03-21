@@ -168,3 +168,8 @@ python3 -m RosENet -- evaluate <train_dataset> <evaluation_dataset> <model> <fea
 ```
 python3 -m RosENet -- predict <train_dataset> <prediction_dataset> <model> <features_string> <seed>
 ```
+
+### Preprocessed datasets
+
+The datasets for training and validation of RosENet have been published and are accesible in https://doi.org/10.5281/zenodo.4625486
+
