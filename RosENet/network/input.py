@@ -103,7 +103,19 @@ def make_input_fn(input_path, shape, training, rot, merge):
                          'rosetta_sol_l_pos',
                          'rosetta_elec_l_pos',
                          'rosetta_sol_l_neg',
-                         'rosetta_elec_l_neg']
+                         'rosetta_elec_l_neg',
+                         'xtb_charge_p_pos',
+                         'xtb_charge_p_neg',
+                         'xtb_charge_l_pos',
+                         'xtb_charge_l_neg',
+                         'shape_protein_dist',
+                         'shape_ligand_dist',
+                         'shape_pocket_depth',
+                         'shape_buried',
+                         'hbond_prot_don_lig_acc',
+                         'hbond_lig_don_prot_acc',
+                         'hbond_total',
+                         'hbond_network']
         files = tf.data.Dataset.list_files(str(input_path))
         dataset = files.apply(
                     tf.data.experimental.parallel_interleave(tf.data.TFRecordDataset,
@@ -140,7 +152,7 @@ def load_fn(dataset_object, channels, rotate, training):
         True if training
     """
     name = dataset_object.name
-    shape = [settings.size]*3 + [30]
+    shape = [settings.size]*3 + [42]  # Updated from 30 to 42 channels (30 + 12 new)
     training = (training == tf.estimator.ModeKeys.TRAIN)
     dataset_files = dataset_object.tfrecords / '*.tfrecords'
     return make_input_fn(dataset_files, shape, training, rotate, channels)

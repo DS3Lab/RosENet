@@ -24,6 +24,23 @@ Pyrosetta can be copied next to the RosENet folder or by adding it to the `PYTHO
 
 You must set the path to Rosetta's main folder in the attribute `rosetta.root` in file `RosENet/constants.py` [LINK](RosENet/constants.py#L65)
 
+### New Feature Dependencies
+
+For the new QM-derived partial charges feature, you need to install xTB (extended tight-binding):
+
+```bash
+# Install via conda (recommended)
+conda install -c conda-forge xtb
+
+# Or install via conda-forge pip
+pip install xtb-python
+
+# Or build from source
+# See: https://github.com/grimme-lab/xtb
+```
+
+The shape complementarity and H-bond geometry features use standard dependencies already included in the package.
+
 ## How to run
 
 This repository is built as a Python module. To execute it, one should go above the root folder and run the following command:
@@ -82,8 +99,9 @@ After training a neural network, the module will save the trained network in the
 
 To select feature subsets, we can use the channel selectors. These are implemented by matching them as a substring of the feature names. Multiple channel selectors can be combined with underscored.
 
-The feature names are: 
+The feature names are:
 
+**HTMD Features (16 channels):**
 * `htmd_hydrophobic`
 * `htmd_aromatic`
 * `htmd_hbond_acceptor`
@@ -92,8 +110,12 @@ The feature names are:
 * `htmd_negative_ionizable`
 * `htmd_metal`
 * `htmd_occupancies`
+
+**Electronegativity Features (2 channels):**
 * `elec_p`
 * `elec_l`
+
+**Rosetta Energy Features (12 channels):**
 * `rosetta_atr_p`
 * `rosetta_rep_p`
 * `rosetta_sol_p_pos`
@@ -107,11 +129,35 @@ The feature names are:
 * `rosetta_sol_l_neg`
 * `rosetta_elec_l_neg`
 
+**NEW: QM-derived Partial Charges (4 channels):**
+* `xtb_charge_p_pos` - Protein positive charges (xTB)
+* `xtb_charge_p_neg` - Protein negative charges (xTB)
+* `xtb_charge_l_pos` - Ligand positive charges (xTB)
+* `xtb_charge_l_neg` - Ligand negative charges (xTB)
+
+**NEW: Shape Complementarity Features (4 channels):**
+* `shape_protein_dist` - Distance to protein surface
+* `shape_ligand_dist` - Distance to ligand surface
+* `shape_pocket_depth` - Binding pocket depth
+* `shape_buried` - Buried surface indicator
+
+**NEW: Hydrogen Bond Geometry Features (4 channels):**
+* `hbond_prot_don_lig_acc` - Protein donor - Ligand acceptor strength
+* `hbond_lig_don_prot_acc` - Ligand donor - Protein acceptor strength
+* `hbond_total` - Total H-bond strength
+* `hbond_network` - H-bond network density
+
 All `htmd` feature names represent both the protein and ligand features, so they are effectively two channels.
 
 For example, using `htmd_rosetta` will include all the HTMD features, and all the Rosetta features.
 
 The combination used in the paper release is `aromatic_acceptor_ion_rosetta`, adding to 20 feature maps.
+
+**New feature combinations:**
+* `xtb_charge` - Include all QM-derived charge features (4 channels)
+* `shape` - Include all shape complementarity features (4 channels)
+* `hbond` - Include all H-bond geometry features (4 channels)
+* `aromatic_acceptor_ion_rosetta_xtb_shape_hbond` - Full feature set (32 channels)
 
 
 ## Setting the randomness

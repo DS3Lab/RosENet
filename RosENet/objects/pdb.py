@@ -39,13 +39,17 @@ class _PDB:
             "complex" : {
                 "pdb": "{code}_complex_{number}.pdb",
                 "pdbqt": "{code}_complex_{number}.pdbqt",
-                "attr": "{code}_complex_{number}.attr"
+                "attr": "{code}_complex_{number}.attr",
+                "xtb_charges": "{code}_complex_{number}_xtb.npz"
                 }
             },
         "image" : {
                 "rosetta" : "{code}_rosetta.img",
                 "htmd" : "{code}_htmd.img",
-                "electronegativity" : "{code}_electroneg.img"
+                "electronegativity" : "{code}_electroneg.img",
+                "xtb_charges" : "{code}_xtb_charges.img",
+                "shape" : "{code}_shape.img",
+                "hbond_geometry" : "{code}_hbond_geometry.img"
             }
         }
 

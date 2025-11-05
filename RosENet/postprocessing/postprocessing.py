@@ -13,6 +13,15 @@ def combine_maps(pdb_object):
     features = [pdb_object.image.htmd.read(),
                 pdb_object.image.electronegativity.read(),
                 pdb_object.image.rosetta.read()]
+
+    # Add new features if they exist
+    if pdb_object.image.xtb_charges.path.exists():
+        features.append(pdb_object.image.xtb_charges.read())
+    if pdb_object.image.shape.path.exists():
+        features.append(pdb_object.image.shape.read())
+    if pdb_object.image.hbond_geometry.path.exists():
+        features.append(pdb_object.image.hbond_geometry.read())
+
     grid = np.concatenate(features, axis=-1)
     storage.make_directory(pdb_object.image.combined.path.parent)
     pdb_object.image.combined.write(grid)
